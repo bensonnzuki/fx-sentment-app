@@ -12,11 +12,15 @@
   .ts { font-size:11px; color:#94a3b8; margin-top:2px; }
   button { background:#3b82f6; color:#fff; border:none; border-radius:6px; padding:7px 12px; font-weight:600; font-size:12px; min-width:82px; transition:0.15s; }
   button:active { transform:scale(0.95); background:#2563eb; }
-  .tabs { display:flex; gap:6px; overflow-x:auto; margin-top:10px; }
+  .tabs { display:flex; gap:6px; overflow-x:auto; margin-top:9px; align-items:center; }
+  .lbl { font-size:11px; color:#64748b; font-weight:700; margin-right:2px; }
   .tab { background:#334155; color:#cbd5e1; padding:5px 10px; border-radius:14px; font-size:12px; white-space:nowrap; }
   .tab.active { background:#3b82f6; color:#fff; }
+  .stab { background:#0f172a; color:#94a3b8; padding:4px 9px; border-radius:10px; font-size:11px; border:1px solid #334155; white-space:nowrap; }
+  .stab.active { background:#1d4ed8; color:#fff; border-color:#3b82f6; }
   .list { padding:10px; display:flex; flex-direction:column; gap:8px; }
   .card { background:#1e293b; border-radius:10px; padding:12px; border:1px solid #334155; }
+  .card.sig { border-color:#3b82f6; }
   .row1 { display:flex; justify-content:space-between; align-items:center; }
   .pair { font-weight:700; font-size:16px; }
   .sess { font-size:11px; color:#94a3b8; margin-left:6px; }
@@ -38,34 +42,62 @@
     <div><h1>FX Sentiment & RSI</h1><div class="ts" id="ts">Loading...</div></div>
     <button id="btn" onclick="load(true)">Refresh</button>
   </div>
-  <div class="tabs" id="tabs">
+  <div class="tabs">
     <div class="tab active" onclick="setFilter('ALL',this)">ALL (28)</div>
     <div class="tab" onclick="setFilter('SIGNALS',this)">SIGNALS</div>
     <div class="tab" onclick="setFilter('TIGER',this)">TIGER</div>
     <div class="tab" onclick="setFilter('LONDON',this)">LONDON</div>
     <div class="tab" onclick="setFilter('NEW YORK',this)">NEW YORK</div>
   </div>
+  <div class="tabs">
+    <span class="lbl">SORT:</span>
+    <div class="stab active" onclick="setSort('SETUP',this)">Best Setups</div>
+    <div class="stab" onclick="setSort('LOTS',this)">Total Lots</div>
+    <div class="stab" onclick="setSort('RSI',this)">Extreme RSI</div>
+    <div class="stab" onclick="setSort('NET',this)">Net Lots</div>
+    <div class="stab" onclick="setSort('AZ',this)">A–Z</div>
+  </div>
 </header>
 <div class="list" id="list"></div>
 <script>
 const DATA_URL = "https://bensonnzuki." + "github" + ".io/fx-sentment-app/latest.json";
-let allPairs = [], filter = "ALL";
+let allPairs = [], filter = "ALL", sortBy = "SETUP";
 function setFilter(f, el) {
   filter = f;
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   el.classList.add("active");
   render();
 }
+function setSort(s, el) {
+  sortBy = s;
+  document.querySelectorAll(".stab").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+  render();
+}
 function rsiCls(v) { return v >= 70 ? "hot" : (v <= 30 ? "cold" : ""); }
+function setupScore(p) {
+  let sc = (p.bias === "BUY" || p.bias === "SELL") ? 1000 : (p.bias === "LOW VOL" ? -500 : 0);
+  sc += Math.abs(p.net_sale - p.net_buy);
+  if (p.bias === "BUY" && p.rsi_15m && p.rsi_15m <= 35) sc += 40;
+  if (p.bias === "SELL" && p.rsi_15m && p.rsi_15m >= 65) sc += 40;
+  return sc;
+}
 function render() {
   const list = document.getElementById("list");
-  const rows = allPairs.filter(p => {
+  let rows = allPairs.filter(p => {
     if (filter === "SIGNALS") return p.bias === "BUY" || p.bias === "SELL";
     if (filter !== "ALL") return p.session === filter;
     return true;
   });
+  rows.sort((a, b) => {
+    if (sortBy === "SETUP") return setupScore(b) - setupScore(a);
+    if (sortBy === "LOTS") return b.total_lots - a.total_lots;
+    if (sortBy === "RSI") return Math.abs((b.rsi_15m ?? 50) - 50) - Math.abs((a.rsi_15m ?? 50) - 50);
+    if (sortBy === "NET") return Math.abs(b.net_lots) - Math.abs(a.net_lots);
+    return a.pair.localeCompare(b.pair);
+  });
   list.innerHTML = rows.map(p => `
-    <div class="card">
+    <div class="card ${p.bias === 'BUY' || p.bias === 'SELL' ? 'sig' : ''}">
       <div class="row1">
         <div><span class="pair">${p.pair}</span><span class="sess">${p.session}</span></div>
         <span class="badge ${p.bias.split(' ')}">${p.bias}</span>
