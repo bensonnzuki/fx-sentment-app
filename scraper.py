@@ -553,9 +553,15 @@ def append_oanda_to_excel(rows, changed):
                 if lu_txt:
                     ws.cell(1, 16, lu_txt).font = Font(bold=True, size=10)
 
+            # Wrap Row 1 headers & tighten widths so A..N fits cleanly on one screen
+            ws.row_dimensions[1].height = 30
+            for c_all in range(1, 15):
+                hc = ws.cell(1, c_all)
+                hc.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
             # Style L1, M1, N1 (cols 12, 13, 14) flush next to K1 (BIAS)
             headers = ["OANDA SHORT %", "OANDA LONG %", "2/2 AGREED"]
-            col_widths = [15, 15, 13]
+            col_widths = [11.5, 11.5, 11.0] [15, 15, 13]
             for idx in range(3):
                 col = 12 + idx
                 cell = ws.cell(1, col, headers[idx])
