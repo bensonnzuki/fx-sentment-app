@@ -402,12 +402,18 @@ def fetch_oanda_all(pairs):
     out = {}
     u = "https://www." + "oanda" + ".com/eu-en/market/client-sentiment/"
     try:
-        r = requests.get(u, impersonate="chrome124", timeout=20)
-        txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", r.text))
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as pw:
+            b = pw.chromium.launch(headless=True)
+            page = b.new_page()
+            page.goto(u, wait_until="domcontentloaded", timeout=20000)
+            page.wait_for_timeout(4500)
+            txt = re.sub(r"\s+", " ", page.inner_text("body"))
+            b.close()
         for p in pairs:
-            m = re.search(rf"{p}\s+{p}\s+(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
+            m = re.search(rf"\b{p}\b\s+\b{p}\b\s+(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
             if not m:
-                m = re.search(rf"{p}.{{1,80}}?(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
+                m = re.search(rf"\b{p}\b.{{1,80}}?(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
             if m:
                 os_pct, ol_pct = float(m.group(1)), float(m.group(2))
                 if 98.0 <= (os_pct + ol_pct) <= 102.0:
