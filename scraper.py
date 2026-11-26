@@ -22,7 +22,7 @@ SESSION_MAP = {
 ALL_PAIRS = list(SESSION_MAP.keys())
 
 def fetch_sentiment(pairs):
-    url = "https://" + "://myfxbook.com"
+    url = "https://www." + "myfxbook" + ".com/community/outlook"
     res = requests.get(url, impersonate="chrome", timeout=25)
     text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", res.text))
     names = "|".join(sorted(pairs, key=len, reverse=True))
