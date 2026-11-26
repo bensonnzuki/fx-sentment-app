@@ -21,7 +21,7 @@ jobs:
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
           npm init -y
           npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
-          npx cap init "FX Tracker" "com.bensonnzuki.fxtracker" --web-dir docs
+          npx cap init "SessionEdge" "com.bensonnzuki.fxtracker" --web-dir docs
           node -e 'const fs=require("fs");const c=JSON.parse(fs.readFileSync("capacitor.config.json"));c.server={url:"https://bensonnzuki."+"github"+".io/fx-sentment-app/"};fs.writeFileSync("capacitor.config.json",JSON.stringify(c,null,2));'
           npx cap add android
           npx cap copy android
