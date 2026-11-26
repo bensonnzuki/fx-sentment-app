@@ -391,6 +391,7 @@ def update_excel(now_naive, rows, sentiment_changed):
             if os.path.exists(tmp):
                 os.remove(tmp)
         print(f"Excel updated ({len(history)} pairs, history {'added' if sentiment_changed else 'unchanged'})")
+    append_oanda_to_excel(rows, sentiment_changed)
     except Exception as e:
         print("Excel update failed:", e)
 
@@ -503,6 +504,41 @@ def main():
     else:
         print(f"No change since {prev.get('updated')} - latest.json and Excel left as they are")
 
+
+
+def append_oanda_to_excel(rows, changed):
+    p = "/home/bnzuki/CloudStation/Forex-APP/forex_net_buy_sale_tracker-v4.xlsx"
+    if not os.path.exists(p):
+        return
+    try:
+        import openpyxl
+        wb = openpyxl.load_workbook(p)
+        by_pair = {r["pair"]: r for r in rows}
+        for name in wb.sheetnames:
+            ws = wb[name]
+            hdrs = [ws.cell(1, c).value for c in range(1, ws.max_column + 1)]
+            if "OANDA Short %" not in hdrs:
+                col0 = ws.max_column + 1
+                ws.cell(1, col0, "OANDA Short %")
+                ws.cell(1, col0 + 1, "OANDA Long %")
+                ws.cell(1, col0 + 2, "2/2 Agreed")
+            else:
+                col0 = hdrs.index("OANDA Short %") + 1
+            for r_idx in range(2, ws.max_row + 1):
+                if name == "History" and not changed and r_idx < ws.max_row - len(rows):
+                    continue
+                for c_idx in range(1, min(6, col0)):
+                    val = str(ws.cell(r_idx, c_idx).value or "").strip().upper()
+                    if val in by_pair and ws.cell(r_idx, col0).value is None:
+                        d = by_pair[val]
+                        ws.cell(r_idx, col0, d.get("oanda_short"))
+                        ws.cell(r_idx, col0 + 1, d.get("oanda_long"))
+                        ws.cell(r_idx, col0 + 2, "YES" if d.get("agreed_2of2") else "NO")
+                        break
+        wb.save(p)
+        print("Excel OANDA columns synced!")
+    except Exception as e:
+        print("Excel OANDA sync warning:", e)
 
 if __name__ == "__main__":
     main()
