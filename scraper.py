@@ -413,7 +413,7 @@ def fetch_oanda_all(pairs):
                 page.wait_for_timeout(1500)
             except Exception:
                 pass
-            txt = re.sub(r"\s+", " ", page.inner_text("body"))
+            txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", page.content()))
             b.close()
         for p in pairs:
             m = re.search(rf"\b{p}\b\s+\b{p}\b\s+(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
