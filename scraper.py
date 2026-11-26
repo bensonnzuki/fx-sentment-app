@@ -46,8 +46,8 @@ def fetch_sentiment(pairs):
     host = "www." + "myfxbook" + ".com"
     proxy = "r." + "jina" + ".ai"
     urls = [
-        (f"https://{proxy}/https://{host}/community/outlook?cb={cb}", {"X-No-Cache": "true"}),
-        (f"https://{host}/community/outlook", {})
+        (f"https://{host}/community/outlook", {}),
+        (f"https://{proxy}/https://{host}/community/outlook?cb={cb}", {"X-No-Cache": "true"})
     ]
     names = "|".join(sorted(pairs, key=len, reverse=True))
     not_a_pair = rf"(?:(?!\b(?:{names})\b).)"
