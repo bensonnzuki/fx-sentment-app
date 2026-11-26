@@ -22,26 +22,51 @@ SESSION_MAP = {
 ALL_PAIRS = list(SESSION_MAP.keys())
 
 def fetch_sentiment(pairs):
-    url = "https://www." + "myfxbook" + ".com/community/outlook"
-    res = requests.get(url, impersonate="chrome", timeout=25)
-    text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", res.text))
+    host = "www." + "myfxbook" + ".com"
+    urls = [
+        f"https://{host}/community/outlook",
+        f"https://{host}/community/outlook/xml"
+    ]
     names = "|".join(sorted(pairs, key=len, reverse=True))
     not_a_pair = rf"(?:(?!\b(?:{names})\b).)"
-    pattern = re.compile(
+    pat_html = re.compile(
         rf"\b({names})\b{not_a_pair}{{1,400}}?"
         rf"(?i:short)\s+(\d+(?:\.\d+)?)\s*%\s+([\d,]+(?:\.\d+)?)\s+(?i:lots)"
         rf"{not_a_pair}{{1,150}}?"
         rf"(?i:long)\s+(\d+(?:\.\d+)?)\s*%\s+([\d,]+(?:\.\d+)?)\s+(?i:lots)"
     )
+    pat_xml = re.compile(
+        rf'name="({names})"[^>]*shortPercentage="([\d.]+)"[^>]*longPercentage="([\d.]+)"[^>]*shortVolume="([\d.]+)"[^>]*longVolume="([\d.]+)"',
+        re.I
+    )
     out = {}
-    for m in pattern.finditer(text):
-        p = m.group(1)
-        if p in out: continue
-        sp, sv = float(m.group(2)) / 100.0, float(m.group(3).replace(",", ""))
-        lp, lv = float(m.group(4)) / 100.0, float(m.group(5).replace(",", ""))
-        tot = sv + lv
-        if abs(sp + lp - 1.0) <= 0.02 and (tot == 0 or abs(sv / tot - sp) <= 0.05):
-            out[p] = {"net_sale": sp, "net_sale_vol": sv, "net_buy": lp, "net_buy_vol": lv}
+    for u in urls:
+        try:
+            res = requests.get(u, impersonate="chrome124", timeout=25)
+            print("Fetched:", u, "status:", res.status_code, "len:", len(res.text))
+            for m in pat_xml.finditer(res.text):
+                p = m.group(1).upper()
+                out[p] = {
+                    "net_sale": float(m.group(2)) / 100.0,
+                    "net_buy": float(m.group(3)) / 100.0,
+                    "net_sale_vol": float(m.group(4)),
+                    "net_buy_vol": float(m.group(5))
+                }
+            if len(out) >= 10:
+                return out
+            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", res.text))
+            for m in pat_html.finditer(text):
+                p = m.group(1)
+                if p in out: continue
+                sp, sv = float(m.group(2)) / 100.0, float(m.group(3).replace(",", ""))
+                lp, lv = float(m.group(4)) / 100.0, float(m.group(5).replace(",", ""))
+                tot = sv + lv
+                if abs(sp + lp - 1.0) <= 0.02 and (tot == 0 or abs(sv / tot - sp) <= 0.05):
+                    out[p] = {"net_sale": sp, "net_sale_vol": sv, "net_buy": lp, "net_buy_vol": lv}
+            if len(out) >= 10:
+                return out
+        except Exception as e:
+            print("Fetch error:", u, e)
     return out
 
 def wilder_rsi(close, period=14):
@@ -70,7 +95,9 @@ def fetch_rsi(pairs, period, interval, mins):
 
 def main():
     sent = fetch_sentiment(ALL_PAIRS)
-    if not sent: return
+    print("Matched pairs:", len(sent))
+    if not sent:
+        raise RuntimeError("0 pairs matched from outlook endpoints")
     r1 = fetch_rsi(ALL_PAIRS, "10d", "1h", 60)
     r15 = fetch_rsi(ALL_PAIRS, "5d", "15m", 15)
     stamp = datetime.now(TZ).strftime("%Y-%m-%d %H:%M EAT")
