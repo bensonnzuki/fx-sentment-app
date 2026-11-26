@@ -398,12 +398,56 @@ def update_excel(now_naive, rows, sentiment_changed):
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+def fetch_oanda_all(pairs):
+    out = {}
+    base = "https://www." + "oanda" + ".com/labs/orderbook/data"
+    hdrs = {"Referer": "https://www." + "oanda" + ".com/uk-en/trading/our-charges/"}
+    for p in pairs:
+        inst = f"{p[:3]}_{p[3:]}"
+        pip = 0.01 if "JPY" in p else 0.0001
+        try:
+            r = requests.get(f"{base}/{inst}", headers=hdrs, impersonate="chrome124", timeout=10)
+            if r.status_code != 200 or not r.text.strip().startswith("{"):
+                continue
+            data = r.json()
+            ts_keys = sorted(k for k in data.keys() if k.isdigit())
+            if not ts_keys:
+                continue
+            snap = data[ts_keys[-1]]
+            price = float(snap.get("price", 0))
+            pts = snap.get("points", {})
+            long_sum = sum(float(v.get("pl", 0)) for v in pts.values())
+            short_sum = sum(float(v.get("ps", 0)) for v in pts.values())
+            tot_p = long_sum + short_sum
+            o_long = round((long_sum / tot_p) * 100, 1) if tot_p > 0 else None
+            o_short = round((short_sum / tot_p) * 100, 1) if tot_p > 0 else None
+
+            best_pips, best_side, best_vol = None, "", 0.0
+            for px_str, v in pts.items():
+                diff_pips = round((float(px_str) - price) / pip)
+                if 5 <= abs(diff_pips) <= 50:
+                    vol = float(v.get("ol", 0)) if diff_pips > 0 else float(v.get("os", 0))
+                    if vol > best_vol:
+                        best_vol = vol
+                        best_pips = diff_pips
+                        best_side = "Buy" if diff_pips > 0 else "Sell"
+
+            out[p] = {
+                "oanda_short": o_short, "oanda_long": o_long,
+                "stop_pips": best_pips, "stop_side": best_side, "rvol": None
+            }
+        except Exception:
+            pass
+    print("Public OANDA fetched instruments:", len(out))
+    return out
+
 def main():
     sent, meta = fetch_sentiment(ALL_PAIRS)
     if not sent:
         raise RuntimeError("0 pairs matched from all sources")
     r1 = fetch_rsi(ALL_PAIRS, "10d", "1h", 60)
     r15 = fetch_rsi(ALL_PAIRS, "5d", "15m", 15)
+    oanda_data = fetch_oanda_all(ALL_PAIRS)
     now = datetime.now(TZ)
     now_naive = now.replace(tzinfo=None, second=0, microsecond=0)
     stamp = now.strftime("%Y-%m-%d %H:%M EAT")
@@ -437,7 +481,16 @@ def main():
                 else "SELL" if d["net_buy"] >= BIAS_PCT else "NONE")
         rows.append({**base, "net_sale": round(d["net_sale"] * 100, 1), "net_sale_vol": d["net_sale_vol"],
                      "net_buy": round(d["net_buy"] * 100, 1), "net_buy_vol": d["net_buy_vol"],
-                     "total_lots": tot, "net_lots": net, "bias": bias})
+                     "total_lots": tot, "net_lots": net, "bias": bias,
+            "oanda_short": oanda_data.get(p, {}).get("oanda_short"),
+            "oanda_long": oanda_data.get(p, {}).get("oanda_long"),
+            "stop_pips": oanda_data.get(p, {}).get("stop_pips"),
+            "stop_side": oanda_data.get(p, {}).get("stop_side"),
+            "rvol": oanda_data.get(p, {}).get("rvol"),
+            "agreed_2of2": (
+                (bias == "BUY" and (oanda_data.get(p, {}).get("oanda_long") or 0) >= 70.0) or
+                (bias == "SELL" and (oanda_data.get(p, {}).get("oanda_short") or 0) >= 70.0)
+            )})
 
     sig = lambda rs: [(x["pair"], x["net_sale"], x["total_lots"], x["rsi_1h"], x["rsi_15m"], x["bias"]) for x in rs]
     any_changed = sig(rows) != sig(prev.get("pairs", []))
