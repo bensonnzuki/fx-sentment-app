@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-26 22:55 EAT",
+  "updated": "2026-11-26 22:57 EAT",
   "fingerprint": {
     "source": "direct",
     "data_hash": "97eac322c6b3",
-    "diag": "direct:status=200,len=721446,added=28",
-    "sentiment_changed": true,
+    "diag": "direct:status=200,len=721448,added=28",
+    "sentiment_changed": false,
     "sentiment_since": "2026-11-26 22:55 EAT"
   },
   "pairs": [
@@ -458,8 +458,8 @@
         "NEW YORK"
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_1h": 54.7,
-      "rsi_15m": 60.2,
+      "rsi_1h": 54.6,
+      "rsi_15m": 60.1,
       "net_sale": 69.0,
       "net_sale_vol": 1166.83,
       "net_buy": 31.0,
