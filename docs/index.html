@@ -10,7 +10,8 @@
   .top { display:flex; justify-content:space-between; align-items:center; }
   h1 { font-size:17px; margin:0; }
   .ts { font-size:11px; color:#94a3b8; margin-top:2px; }
-  button { background:#3b82f6; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-weight:600; font-size:12px; }
+  button { background:#3b82f6; color:#fff; border:none; border-radius:6px; padding:7px 12px; font-weight:600; font-size:12px; min-width:82px; transition:0.15s; }
+  button:active { transform:scale(0.95); background:#2563eb; }
   .tabs { display:flex; gap:6px; overflow-x:auto; margin-top:10px; }
   .tab { background:#334155; color:#cbd5e1; padding:5px 10px; border-radius:14px; font-size:12px; white-space:nowrap; }
   .tab.active { background:#3b82f6; color:#fff; }
@@ -26,7 +27,7 @@
   .bar { display:flex; height:8px; border-radius:4px; overflow:hidden; margin:8px 0; background:#334155; }
   .b-short { background:#ef4444; }
   .b-long { background:#22c55e; }
-  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; font-size:11px; color:#cbd5e1; text-align:center; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; font-size:11px; color:#cbd5e1; text-align:center; }
   .val { font-weight:700; font-size:13px; color:#f8fafc; }
   .hot { color:#f87171; } .cold { color:#4ade80; }
 </style>
@@ -35,7 +36,7 @@
 <header>
   <div class="top">
     <div><h1>FX Sentiment & RSI</h1><div class="ts" id="ts">Loading...</div></div>
-    <button onclick="load()">Refresh</button>
+    <button id="btn" onclick="load(true)">Refresh</button>
   </div>
   <div class="tabs" id="tabs">
     <div class="tab active" onclick="setFilter('ALL',this)">ALL (28)</div>
@@ -76,24 +77,31 @@ function render() {
       <div class="grid">
         <div>Short<div class="val">${p.net_sale}%</div></div>
         <div>Long<div class="val">${p.net_buy}%</div></div>
+        <div>Total Lots<div class="val">${Number(p.total_lots).toLocaleString()}</div></div>
         <div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h ?? '-'}</div></div>
         <div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m ?? '-'}</div></div>
+        <div>Net Lots<div class="val ${p.net_lots > 0 ? 'cold' : (p.net_lots < 0 ? 'hot' : '')}">${p.net_lots > 0 ? '+' : ''}${Number(p.net_lots).toLocaleString()}</div></div>
       </div>
     </div>`).join("");
 }
-async function load() {
+async function load(manual) {
+  const btn = document.getElementById("btn");
+  if (manual) { btn.textContent = "Syncing..."; btn.disabled = true; }
   try {
-    const r = await fetch(DATA_URL + "?t=" + Date.now());
+    const r = await fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" });
     const d = await r.json();
-    document.getElementById("ts").textContent = "Updated: " + d.updated;
+    const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    document.getElementById("ts").textContent = "Data: " + d.updated + " (Checked " + now + ")";
     allPairs = d.pairs || [];
     render();
+    if (manual) { btn.textContent = "Updated ✓"; setTimeout(() => { btn.textContent = "Refresh"; btn.disabled = false; }, 1200); }
   } catch (e) {
-    document.getElementById("ts").textContent = "Waiting for first data run...";
+    document.getElementById("ts").textContent = "Connection error — tap Refresh";
+    if (manual) { btn.textContent = "Refresh"; btn.disabled = false; }
   }
 }
-load();
-setInterval(load, 60000);
+load(false);
+setInterval(() => load(false), 60000);
 </script>
 </body>
 </html>
