@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-26 23:03 EAT",
+  "updated": "2026-11-26 23:05 EAT",
   "fingerprint": {
     "source": "direct",
     "data_hash": "c37147fb7b57",
-    "diag": "direct:status=200,len=721446,added=28",
-    "sentiment_changed": true,
+    "diag": "direct:status=200,len=721444,added=28",
+    "sentiment_changed": false,
     "sentiment_since": "2026-11-26 23:03 EAT"
   },
   "pairs": [
@@ -339,7 +339,7 @@
         "LONDON"
       ],
       "session": "TIGER \u2022 LONDON",
-      "rsi_1h": 61.1,
+      "rsi_1h": 61.2,
       "rsi_15m": 61.6,
       "net_sale": 84.0,
       "net_sale_vol": 245.84,
@@ -362,7 +362,7 @@
         "LONDON"
       ],
       "session": "TIGER \u2022 LONDON",
-      "rsi_1h": 61.0,
+      "rsi_1h": 60.9,
       "rsi_15m": 61.2,
       "net_sale": 78.0,
       "net_sale_vol": 179.04,
