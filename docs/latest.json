@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-26 21:00 EAT",
+  "updated": "2026-11-26 21:05 EAT",
   "pairs": [
     {
       "pair": "USDJPY",
@@ -121,7 +121,7 @@
       "total_lots": 575.86,
       "net_lots": -175.92,
       "rsi_1h": 48.8,
-      "rsi_15m": 49.7,
+      "rsi_15m": 49.8,
       "bias": "NONE"
     },
     {
@@ -271,7 +271,7 @@
       "net_buy_vol": 51.34,
       "total_lots": 229.37,
       "net_lots": -126.69,
-      "rsi_1h": 57.4,
+      "rsi_1h": 57.3,
       "rsi_15m": 52.1,
       "bias": "BUY"
     },
@@ -343,7 +343,7 @@
       "net_buy_vol": 519.58,
       "total_lots": 1685.85,
       "net_lots": -646.69,
-      "rsi_1h": 55.8,
+      "rsi_1h": 55.7,
       "rsi_15m": 57.6,
       "bias": "NONE"
     },
