@@ -407,7 +407,12 @@ def fetch_oanda_all(pairs):
             b = pw.chromium.launch(headless=True)
             page = b.new_page()
             page.goto(u, wait_until="domcontentloaded", timeout=20000)
-            page.wait_for_timeout(4500)
+            page.wait_for_timeout(3500)
+            try:
+                page.locator("li, button, a, span").filter(has_text=re.compile(r"^All$")).first.click(timeout=3000)
+                page.wait_for_timeout(1500)
+            except Exception:
+                pass
             txt = re.sub(r"\s+", " ", page.inner_text("body"))
             b.close()
         for p in pairs:
