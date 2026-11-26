@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-26 17:45 EAT",
+  "updated": "2026-11-26 17:50 EAT",
   "pairs": [
     {
       "pair": "CHFJPY",
@@ -88,7 +88,7 @@
       "net_buy_vol": 532.4,
       "total_lots": 619.43,
       "net_lots": 445.37,
-      "rsi_1h": 58.1,
+      "rsi_1h": 57.9,
       "rsi_15m": 52.6,
       "bias": "SELL"
     },
@@ -154,7 +154,7 @@
       "total_lots": 233.28,
       "net_lots": 120.98,
       "rsi_1h": 51.0,
-      "rsi_15m": 46.0,
+      "rsi_15m": 46.1,
       "bias": "SELL"
     },
     {
@@ -205,7 +205,7 @@
       "net_buy_vol": 215.09,
       "total_lots": 311.8,
       "net_lots": 118.38,
-      "rsi_1h": 62.6,
+      "rsi_1h": 62.7,
       "rsi_15m": 47.3,
       "bias": "NONE"
     },
@@ -271,7 +271,7 @@
       "total_lots": 326.81,
       "net_lots": 161.55,
       "rsi_1h": 60.3,
-      "rsi_15m": 51.2,
+      "rsi_15m": 51.3,
       "bias": "SELL"
     },
     {
@@ -296,7 +296,7 @@
       "net_buy_vol": 55.14,
       "total_lots": 204.93,
       "net_lots": -94.65,
-      "rsi_1h": 57.8,
+      "rsi_1h": 57.7,
       "rsi_15m": 61.2,
       "bias": "NONE"
     },
@@ -361,7 +361,7 @@
       "net_buy_vol": 532.7,
       "total_lots": 1697.71,
       "net_lots": -632.31,
-      "rsi_1h": 49.9,
+      "rsi_1h": 50.0,
       "rsi_15m": 49.4,
       "bias": "NONE"
     }
