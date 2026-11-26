@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-26 22:24 EAT",
+  "updated": "2026-11-26 22:25 EAT",
   "fingerprint": {
     "source": "direct",
     "data_hash": "eb985c31d850",
-    "diag": "direct:status=200,len=721447,added=28",
-    "sentiment_changed": true,
+    "diag": "direct:status=200,len=721443,added=28",
+    "sentiment_changed": false,
     "sentiment_since": "2026-11-26 22:24 EAT"
   },
   "pairs": [
@@ -25,7 +25,13 @@
       "net_buy_vol": 543.29,
       "total_lots": 1225.24,
       "net_lots": -138.66,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "AUDUSD",
@@ -42,7 +48,13 @@
       "net_buy_vol": 2288.11,
       "total_lots": 2817.29,
       "net_lots": 1758.93,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "NZDUSD",
@@ -59,7 +71,13 @@
       "net_buy_vol": 1681.61,
       "total_lots": 1822.28,
       "net_lots": 1540.94,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "EURJPY",
@@ -77,7 +95,13 @@
       "net_buy_vol": 617.38,
       "total_lots": 1070.0,
       "net_lots": 164.76,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "GBPJPY",
@@ -95,7 +119,13 @@
       "net_buy_vol": 286.66,
       "total_lots": 481.69,
       "net_lots": 91.63,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "AUDJPY",
@@ -112,7 +142,13 @@
       "net_buy_vol": 765.78,
       "total_lots": 860.01,
       "net_lots": 671.55,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "EURAUD",
@@ -129,7 +165,13 @@
       "net_buy_vol": 200.38,
       "total_lots": 576.34,
       "net_lots": -175.58,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "GBPAUD",
@@ -146,7 +188,13 @@
       "net_buy_vol": 61.59,
       "total_lots": 533.58,
       "net_lots": -410.4,
-      "bias": "BUY"
+      "bias": "BUY",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "CHFJPY",
@@ -163,7 +211,13 @@
       "net_buy_vol": 146.33,
       "total_lots": 243.47,
       "net_lots": 49.19,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "CADJPY",
@@ -180,7 +234,13 @@
       "net_buy_vol": 182.15,
       "total_lots": 240.86,
       "net_lots": 123.44,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "NZDJPY",
@@ -196,7 +256,13 @@
       "net_buy_vol": 384.75,
       "total_lots": 418.57,
       "net_lots": 350.93,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "AUDCAD",
@@ -213,7 +279,13 @@
       "net_buy_vol": 5460.24,
       "total_lots": 7227.43,
       "net_lots": 3693.05,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "AUDCHF",
@@ -230,7 +302,13 @@
       "net_buy_vol": 361.07,
       "total_lots": 449.59,
       "net_lots": 272.55,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "AUDNZD",
@@ -246,7 +324,13 @@
       "net_buy_vol": 1426.22,
       "total_lots": 2888.83,
       "net_lots": -36.39,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "GBPNZD",
@@ -256,14 +340,20 @@
       ],
       "session": "TIGER \u2022 LONDON",
       "rsi_1h": 60.5,
-      "rsi_15m": 61.4,
+      "rsi_15m": 61.5,
       "net_sale": 84.0,
       "net_sale_vol": 245.78,
       "net_buy": 16.0,
       "net_buy_vol": 47.43,
       "total_lots": 293.21,
       "net_lots": -198.35,
-      "bias": "BUY"
+      "bias": "BUY",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "EURNZD",
@@ -280,7 +370,13 @@
       "net_buy_vol": 51.29,
       "total_lots": 230.4,
       "net_lots": -127.82,
-      "bias": "BUY"
+      "bias": "BUY",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "EURUSD",
@@ -298,7 +394,13 @@
       "net_buy_vol": 13383.33,
       "total_lots": 17218.9,
       "net_lots": 9547.76,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "GBPUSD",
@@ -316,7 +418,13 @@
       "net_buy_vol": 4212.17,
       "total_lots": 5547.93,
       "net_lots": 2876.41,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "USDCHF",
@@ -334,7 +442,13 @@
       "net_buy_vol": 515.78,
       "total_lots": 920.48,
       "net_lots": 111.08,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "USDCAD",
@@ -352,7 +466,13 @@
       "net_buy_vol": 517.01,
       "total_lots": 1683.63,
       "net_lots": -649.61,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "EURGBP",
@@ -368,7 +488,13 @@
       "net_buy_vol": 2131.13,
       "total_lots": 2418.58,
       "net_lots": 1843.68,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "EURCHF",
@@ -384,7 +510,13 @@
       "net_buy_vol": 332.83,
       "total_lots": 465.14,
       "net_lots": 200.52,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "EURCAD",
@@ -402,7 +534,13 @@
       "net_buy_vol": 749.7,
       "total_lots": 840.96,
       "net_lots": 658.44,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "NZDCHF",
@@ -418,7 +556,13 @@
       "net_buy_vol": 308.44,
       "total_lots": 341.03,
       "net_lots": 275.85,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "GBPCAD",
@@ -436,7 +580,13 @@
       "net_buy_vol": 196.7,
       "total_lots": 282.22,
       "net_lots": 111.18,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "GBPCHF",
@@ -452,7 +602,13 @@
       "net_buy_vol": 212.64,
       "total_lots": 311.29,
       "net_lots": 113.99,
-      "bias": "NONE"
+      "bias": "NONE",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "CADCHF",
@@ -470,7 +626,13 @@
       "net_buy_vol": 269.0,
       "total_lots": 345.17,
       "net_lots": 192.83,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     },
     {
       "pair": "NZDCAD",
@@ -486,7 +648,13 @@
       "net_buy_vol": 1228.42,
       "total_lots": 1347.1,
       "net_lots": 1109.74,
-      "bias": "SELL"
+      "bias": "SELL",
+      "oanda_short": null,
+      "oanda_long": null,
+      "stop_pips": null,
+      "stop_side": null,
+      "rvol": null,
+      "agreed_2of2": false
     }
   ],
   "any_changed": true
