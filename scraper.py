@@ -55,7 +55,7 @@ def fetch_sentiment(pairs):
                 }
             if len(out) >= 10:
                 return out
-            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", res.text))
+            text = re.sub(r"[|\[\]()]+", " ", re.sub(r"<[^>]+>", " ", res.text)); text = re.sub(r"\s+", " ", text)
             for m in pat_html.finditer(text):
                 p = m.group(1)
                 if p in out: continue
