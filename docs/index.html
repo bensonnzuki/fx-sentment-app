@@ -114,7 +114,7 @@ async function load(manual) {
     const r = await fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" });
     const d = await r.json();
     const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-    document.getElementById("ts").textContent = "Data: " + d.updated + " (Checked " + now + ")";
+    const sc = d.fingerprint?.sentiment_since ? " • Sent since " + d.fingerprint.sentiment_since : ""; document.getElementById("ts").textContent = "Data: " + d.updated + sc + " (Checked " + now + ")";
     checkStale(d.updated);
     allPairs = d.pairs || [];
     render();
