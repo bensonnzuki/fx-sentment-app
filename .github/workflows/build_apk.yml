@@ -8,15 +8,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
-      - name: Init Capacitor & Build APK
+      - uses: android-actions/setup-android@v3
+      - name: Build Capacitor APK
         run: |
           npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
           npx cap init "FX Tracker" "com.bensonnzuki.fxtracker" --web-dir docs
           npx cap add android
           npx cap copy android
