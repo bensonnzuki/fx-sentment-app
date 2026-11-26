@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>FX Sentiment Tracker</title>
+<style>
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,sans-serif; background:#0f172a; color:#f8fafc; }
+  header { position:sticky; top:0; background:#1e293b; padding:12px 14px; border-bottom:1px solid #334155; z-index:10; }
+  .top { display:flex; justify-content:space-between; align-items:center; }
+  h1 { font-size:17px; margin:0; }
+  .ts { font-size:11px; color:#94a3b8; margin-top:2px; }
+  button { background:#3b82f6; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-weight:600; font-size:12px; }
+  .tabs { display:flex; gap:6px; overflow-x:auto; margin-top:10px; }
+  .tab { background:#334155; color:#cbd5e1; padding:5px 10px; border-radius:14px; font-size:12px; white-space:nowrap; }
+  .tab.active { background:#3b82f6; color:#fff; }
+  .list { padding:10px; display:flex; flex-direction:column; gap:8px; }
+  .card { background:#1e293b; border-radius:10px; padding:12px; border:1px solid #334155; }
+  .row1 { display:flex; justify-content:space-between; align-items:center; }
+  .pair { font-weight:700; font-size:16px; }
+  .sess { font-size:11px; color:#94a3b8; margin-left:6px; }
+  .badge { padding:3px 8px; border-radius:6px; font-size:11px; font-weight:700; }
+  .BUY { background:#14532d; color:#4ade80; }
+  .SELL { background:#7f1d1d; color:#f87171; }
+  .NONE, .LOW { background:#334155; color:#94a3b8; }
+  .bar { display:flex; height:8px; border-radius:4px; overflow:hidden; margin:8px 0; background:#334155; }
+  .b-short { background:#ef4444; }
+  .b-long { background:#22c55e; }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; font-size:11px; color:#cbd5e1; text-align:center; }
+  .val { font-weight:700; font-size:13px; color:#f8fafc; }
+  .hot { color:#f87171; } .cold { color:#4ade80; }
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div><h1>FX Sentiment & RSI</h1><div class="ts" id="ts">Loading...</div></div>
+    <button onclick="load()">Refresh</button>
+  </div>
+  <div class="tabs" id="tabs">
+    <div class="tab active" onclick="setFilter('ALL',this)">ALL (28)</div>
+    <div class="tab" onclick="setFilter('SIGNALS',this)">SIGNALS</div>
+    <div class="tab" onclick="setFilter('TIGER',this)">TIGER</div>
+    <div class="tab" onclick="setFilter('LONDON',this)">LONDON</div>
+    <div class="tab" onclick="setFilter('NEW YORK',this)">NEW YORK</div>
+  </div>
+</header>
+<div class="list" id="list"></div>
+<script>
+const DATA_URL = "https://" + "bensonnzuki.github.io/fx-sentment-app/latest.json";
+let allPairs = [], filter = "ALL";
+function setFilter(f, el) {
+  filter = f;
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+  render();
+}
+function rsiCls(v) { return v >= 70 ? "hot" : (v <= 30 ? "cold" : ""); }
+function render() {
+  const list = document.getElementById("list");
+  const rows = allPairs.filter(p => {
+    if (filter === "SIGNALS") return p.bias === "BUY" || p.bias === "SELL";
+    if (filter !== "ALL") return p.session === filter;
+    return true;
+  });
+  list.innerHTML = rows.map(p => `
+    <div class="card">
+      <div class="row1">
+        <div><span class="pair">${p.pair}</span><span class="sess">${p.session}</span></div>
+        <span class="badge ${p.bias.split(' ')}">${p.bias}</span>
+      </div>
+      <div class="bar">
+        <div class="b-short" style="width:${p.net_sale}%"></div>
+        <div class="b-long" style="width:${p.net_buy}%"></div>
+      </div>
+      <div class="grid">
+        <div>Short<div class="val">${p.net_sale}%</div></div>
+        <div>Long<div class="val">${p.net_buy}%</div></div>
+        <div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h ?? '-'}</div></div>
+        <div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m ?? '-'}</div></div>
+      </div>
+    </div>`).join("");
+}
+async function load() {
+  try {
+    const r = await fetch(DATA_URL + "?t=" + Date.now());
+    const d = await r.json();
+    document.getElementById("ts").textContent = "Updated: " + d.updated;
+    allPairs = d.pairs || [];
+    render();
+  } catch (e) {
+    document.getElementById("ts").textContent = "Waiting for first data run...";
+  }
+}
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>
