@@ -1,4 +1,4 @@
-import os, re, json
+import os, re, json, time, hashlib
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from curl_cffi import requests
@@ -42,56 +42,47 @@ SESSIONS_MAP = {
 ALL_PAIRS = list(SESSIONS_MAP.keys())
 
 def fetch_sentiment(pairs):
+    cb = int(time.time())
     host = "www." + "myfxbook" + ".com"
     proxy = "r." + "jina" + ".ai"
     urls = [
-        f"https://{proxy}/https://{host}/community/outlook",
-        f"https://{host}/community/outlook"
+        (f"https://{proxy}/https://{host}/community/outlook?cb={cb}", {"X-No-Cache": "true"}),
+        (f"https://{host}/community/outlook", {})
     ]
     names = "|".join(sorted(pairs, key=len, reverse=True))
     not_a_pair = rf"(?:(?!\b(?:{names})\b).)"
-    pat_html = re.compile(
+    pattern = re.compile(
         rf"\b({names})\b{not_a_pair}{{1,400}}?"
         rf"(?i:short)\s+(\d+(?:\.\d+)?)\s*%\s+([\d,]+(?:\.\d+)?)\s+(?i:lots)"
         rf"{not_a_pair}{{1,150}}?"
         rf"(?i:long)\s+(\d+(?:\.\d+)?)\s*%\s+([\d,]+(?:\.\d+)?)\s+(?i:lots)"
     )
-    pat_xml = re.compile(
-        rf'name="({names})"[^>]*shortPercentage="([\d.]+)"[^>]*longPercentage="([\d.]+)"[^>]*shortVolume="([\d.]+)"[^>]*longVolume="([\d.]+)"',
-        re.I
-    )
     out = {}
-    for u in urls:
+    for u, hdrs in urls:
         try:
-            res = requests.get(u, impersonate="chrome124", timeout=25)
-            print("Fetched:", u, "status:", res.status_code, "len:", len(res.text))
-            for m in pat_xml.finditer(res.text):
-                p = m.group(1).upper()
-                out[p] = {
-                    "net_sale": float(m.group(2)) / 100.0,
-                    "net_buy": float(m.group(3)) / 100.0,
-                    "net_sale_vol": float(m.group(4)),
-                    "net_buy_vol": float(m.group(5))
-                }
-            if len(out) >= 10:
-                return out
-            text = re.sub(r"[|\[\]()]+", " ", re.sub(r"<[^>]+>", " ", res.text)); text = re.sub(r"\s+", " ", text)
-            for m in pat_html.finditer(text):
+            res = requests.get(u, headers=hdrs, impersonate="chrome124", timeout=25)
+            raw = res.text
+            text = re.sub(r"[|\[\]()]+", " ", re.sub(r"<[^>]+>", " ", raw))
+            text = re.sub(r"\s+", " ", text)
+            for m in pattern.finditer(text):
                 p = m.group(1)
-                if p in out: continue
+                if p in out:
+                    continue
                 sp, sv = float(m.group(2)) / 100.0, float(m.group(3).replace(",", ""))
                 lp, lv = float(m.group(4)) / 100.0, float(m.group(5).replace(",", ""))
                 tot = sv + lv
                 if abs(sp + lp - 1.0) <= 0.02 and (tot == 0 or abs(sv / tot - sp) <= 0.05):
                     out[p] = {"net_sale": sp, "net_sale_vol": sv, "net_buy": lp, "net_buy_vol": lv}
             if len(out) >= 10:
-                return out
+                data_fp = hashlib.sha256(json.dumps(out, sort_keys=True).encode()).hexdigest()[:12]
+                return out, {"source": u, "page_len": len(raw), "data_hash": data_fp}
         except Exception as e:
             print("Fetch error:", u, e)
-    return out
+    return out, {"source": "none", "page_len": 0, "data_hash": ""}
 
 def wilder_rsi(close, period=14):
-    if close is None or len(close) < period + 1: return None
+    if close is None or len(close) < period + 1:
+        return None
     d = close.diff()
     ag = d.clip(lower=0).ewm(alpha=1/period, min_periods=period, adjust=False).mean()
     al = (-d.clip(upper=0)).ewm(alpha=1/period, min_periods=period, adjust=False).mean()
@@ -106,33 +97,54 @@ def fetch_rsi(pairs, period, interval, mins):
     for p, t in zip(pairs, tickers):
         try:
             c = df[t]["Close"].dropna()
-            if c.empty: continue
+            if c.empty:
+                continue
             ls = c.index[-1]
             ls = ls.tz_convert("UTC") if ls.tzinfo else ls.tz_localize("UTC")
-            if ls + timedelta(minutes=mins) > now: c = c.iloc[:-1]
+            if ls + timedelta(minutes=mins) > now:
+                c = c.iloc[:-1]
             out[p] = wilder_rsi(c)
-        except Exception: pass
+        except Exception:
+            pass
     return out
 
 def main():
-    sent = fetch_sentiment(ALL_PAIRS)
-    print("Matched pairs:", len(sent))
+    sent, meta = fetch_sentiment(ALL_PAIRS)
     if not sent:
-        raise RuntimeError("0 pairs matched from outlook endpoints")
+        raise RuntimeError("0 pairs matched")
     r1 = fetch_rsi(ALL_PAIRS, "10d", "1h", 60)
     r15 = fetch_rsi(ALL_PAIRS, "5d", "15m", 15)
     stamp = datetime.now(TZ).strftime("%Y-%m-%d %H:%M EAT")
+
+    prev_hash = ""
+    if os.path.exists("docs/latest.json"):
+        try:
+            prev_hash = json.load(open("docs/latest.json")).get("fingerprint", {}).get("data_hash", "")
+        except Exception:
+            pass
+    meta["sentiment_changed"] = (meta["data_hash"] != prev_hash)
+
     rows = []
     for p in ALL_PAIRS:
         d = sent.get(p)
-        if not d: continue
+        if not d:
+            continue
         tot = round(d["net_sale_vol"] + d["net_buy_vol"], 2)
         net = round(d["net_buy_vol"] - d["net_sale_vol"], 2)
         bias = "LOW VOL" if tot < MIN_LOTS else ("BUY" if d["net_sale"] >= BIAS_PCT else ("SELL" if d["net_buy"] >= BIAS_PCT else "NONE"))
-        rows.append({"pair": p, "sessions": SESSIONS_MAP[p], "session": " • ".join(SESSIONS_MAP[p]), "net_sale": round(d["net_sale"] * 100, 1), "net_sale_vol": d["net_sale_vol"], "net_buy": round(d["net_buy"] * 100, 1), "net_buy_vol": d["net_buy_vol"], "total_lots": tot, "net_lots": net, "rsi_1h": r1.get(p), "rsi_15m": r15.get(p), "bias": bias})
+        sess_list = SESSIONS_MAP[p]
+        rows.append({
+            "pair": p, "sessions": sess_list, "session": " • ".join(sess_list),
+            "net_sale": round(d["net_sale"] * 100, 1), "net_sale_vol": d["net_sale_vol"],
+            "net_buy": round(d["net_buy"] * 100, 1), "net_buy_vol": d["net_buy_vol"],
+            "total_lots": tot, "net_lots": net,
+            "rsi_1h": r1.get(p), "rsi_15m": r15.get(p), "bias": bias
+        })
+
     os.makedirs("docs", exist_ok=True)
     with open("docs/latest.json", "w") as f:
-        json.dump({"updated": stamp, "pairs": rows}, f, indent=2)
+        json.dump({"updated": stamp, "fingerprint": meta, "pairs": rows}, f, indent=2)
+    print("Saved:", stamp, meta)
 
 if __name__ == "__main__":
     main()
