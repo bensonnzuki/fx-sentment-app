@@ -391,7 +391,7 @@ def update_excel(now_naive, rows, sentiment_changed):
             if os.path.exists(tmp):
                 os.remove(tmp)
         print(f"Excel updated ({len(history)} pairs, history {'added' if sentiment_changed else 'unchanged'})")
-    append_oanda_to_excel(rows, sentiment_changed)
+        append_oanda_to_excel(rows, sentiment_changed)
     except Exception as e:
         print("Excel update failed:", e)
 
