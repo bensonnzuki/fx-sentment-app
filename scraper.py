@@ -4,7 +4,7 @@ One Myfxbook fetch per run produces BOTH outputs:
   * docs/latest.json  (the app, published through GitHub Pages)
   * the v4 Excel tracker (main sheet + History sheet)
 
-Sources are tried in order (browser -> direct -> jina) and their results are merged,
+Sources are tried in order (direct -> browser -> jina) and their results are merged,
 so a pair missing from one source can still come from the next.
 """
 import os, re, sys, json, time, shutil, hashlib, tempfile
@@ -157,7 +157,7 @@ def save_debug(label, raw, clean):
 
 
 def fetch_sentiment(pairs):
-    sources = ["browser", "direct", "jina"]
+    sources = ["direct", "browser", "jina"]   # direct works from the home PC; browser/jina only fill gaps
     out, rejected, logs, used = {}, [], [], []
     for label in sources:
         if len(out) == len(pairs):
