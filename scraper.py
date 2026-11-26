@@ -420,7 +420,7 @@ def fetch_oanda_all(pairs):
             if not m:
                 m = re.search(rf"\b{p}\b.{{1,80}}?(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
             if m:
-                ol_pct, os_pct = float(m.group(1)), float(m.group(2))
+                os_pct, ol_pct = float(m.group(1)), float(m.group(2))
                 if 98.0 <= (os_pct + ol_pct) <= 102.0:
                     out[p] = {
                         "oanda_short": os_pct, "oanda_long": ol_pct,
@@ -478,8 +478,8 @@ def main():
             "stop_side": oanda_data.get(p, {}).get("stop_side"),
             "rvol": oanda_data.get(p, {}).get("rvol"),
             "agreed_2of2": (
-                (bias == "BUY" and (oanda_data.get(p, {}).get("oanda_long") or 0) >= 70.0) or
-                (bias == "SELL" and (oanda_data.get(p, {}).get("oanda_short") or 0) >= 70.0)
+                (bias == "BUY" and (oanda_data.get(p, {}).get("oanda_short") or 0) >= 70.0) or
+                (bias == "SELL" and (oanda_data.get(p, {}).get("oanda_long") or 0) >= 70.0)
             )})
 
     sig = lambda rs: [(x["pair"], x["net_sale"], x["total_lots"], x["rsi_1h"], x["rsi_15m"], x["bias"]) for x in rs]
