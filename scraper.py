@@ -9,17 +9,37 @@ TZ = ZoneInfo("Africa/Nairobi")
 MIN_LOTS = 100.0
 BIAS_PCT = 0.75
 
-SESSION_MAP = {
-    "CHFJPY": "TIGER", "AUDJPY": "TIGER", "GBPJPY": "TIGER", "NZDJPY": "TIGER",
-    "AUDUSD": "TIGER", "EURJPY": "TIGER", "AUDCHF": "TIGER", "NZDUSD": "TIGER",
-    "AUDCAD": "TIGER", "AUDNZD": "TIGER", "USDJPY": "TIGER", "CADJPY": "TIGER",
-    "EURCHF": "LONDON", "EURUSD": "LONDON", "NZDCHF": "LONDON", "GBPCHF": "LONDON",
-    "EURCAD": "LONDON", "CADCHF": "LONDON", "GBPUSD": "LONDON", "EURGBP": "LONDON",
-    "GBPCAD": "LONDON", "GBPNZD": "LONDON", "EURNZD": "LONDON", "GBPAUD": "LONDON",
-    "EURAUD": "LONDON",
-    "NZDCAD": "NEW YORK", "USDCHF": "NEW YORK", "USDCAD": "NEW YORK"
+SESSIONS_MAP = {
+    "USDJPY": ["TIGER", "LONDON", "LONDON-NY", "NEW YORK"],
+    "AUDUSD": ["TIGER", "NEW YORK"],
+    "NZDUSD": ["TIGER", "NEW YORK"],
+    "EURJPY": ["TIGER", "LONDON", "LONDON-NY"],
+    "GBPJPY": ["TIGER", "LONDON", "LONDON-NY"],
+    "AUDJPY": ["TIGER", "LONDON"],
+    "EURAUD": ["TIGER", "LONDON"],
+    "GBPAUD": ["TIGER", "LONDON"],
+    "CHFJPY": ["TIGER", "LONDON"],
+    "CADJPY": ["TIGER", "NEW YORK"],
+    "NZDJPY": ["TIGER"],
+    "AUDCAD": ["TIGER", "NEW YORK"],
+    "AUDCHF": ["TIGER", "LONDON"],
+    "AUDNZD": ["TIGER"],
+    "GBPNZD": ["TIGER", "LONDON"],
+    "EURNZD": ["TIGER", "LONDON"],
+    "EURUSD": ["LONDON", "LONDON-NY", "NEW YORK"],
+    "GBPUSD": ["LONDON", "LONDON-NY", "NEW YORK"],
+    "USDCHF": ["LONDON", "LONDON-NY", "NEW YORK"],
+    "USDCAD": ["LONDON", "LONDON-NY", "NEW YORK"],
+    "EURGBP": ["LONDON"],
+    "EURCHF": ["LONDON"],
+    "EURCAD": ["LONDON", "LONDON-NY", "NEW YORK"],
+    "NZDCHF": ["LONDON"],
+    "GBPCAD": ["LONDON", "LONDON-NY", "NEW YORK"],
+    "GBPCHF": ["LONDON"],
+    "CADCHF": ["LONDON", "LONDON-NY", "NEW YORK"],
+    "NZDCAD": ["NEW YORK"],
 }
-ALL_PAIRS = list(SESSION_MAP.keys())
+ALL_PAIRS = list(SESSIONS_MAP.keys())
 
 def fetch_sentiment(pairs):
     host = "www." + "myfxbook" + ".com"
@@ -109,7 +129,7 @@ def main():
         tot = round(d["net_sale_vol"] + d["net_buy_vol"], 2)
         net = round(d["net_buy_vol"] - d["net_sale_vol"], 2)
         bias = "LOW VOL" if tot < MIN_LOTS else ("BUY" if d["net_sale"] >= BIAS_PCT else ("SELL" if d["net_buy"] >= BIAS_PCT else "NONE"))
-        rows.append({"pair": p, "session": SESSION_MAP[p], "net_sale": round(d["net_sale"] * 100, 1), "net_sale_vol": d["net_sale_vol"], "net_buy": round(d["net_buy"] * 100, 1), "net_buy_vol": d["net_buy_vol"], "total_lots": tot, "net_lots": net, "rsi_1h": r1.get(p), "rsi_15m": r15.get(p), "bias": bias})
+        rows.append({"pair": p, "sessions": SESSIONS_MAP[p], "session": " • ".join(SESSIONS_MAP[p]), "net_sale": round(d["net_sale"] * 100, 1), "net_sale_vol": d["net_sale_vol"], "net_buy": round(d["net_buy"] * 100, 1), "net_buy_vol": d["net_buy_vol"], "total_lots": tot, "net_lots": net, "rsi_1h": r1.get(p), "rsi_15m": r15.get(p), "bias": bias})
     os.makedirs("docs", exist_ok=True)
     with open("docs/latest.json", "w") as f:
         json.dump({"updated": stamp, "pairs": rows}, f, indent=2)
