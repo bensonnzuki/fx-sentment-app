@@ -25,7 +25,7 @@ jobs:
           node -e 'const fs=require("fs");const c=JSON.parse(fs.readFileSync("capacitor.config.json"));c.server={url:"https://bensonnzuki."+"github"+".io/fx-sentment-app/"};fs.writeFileSync("capacitor.config.json",JSON.stringify(c,null,2));'
           npx cap add android
           npx cap copy android
-          cd android && chmod +x gradlew && ./gradlew assembleDebug
+          sed -i '/android.permission.DUMP/d' android/app/src/main/AndroidManifest.xml && cd android && chmod +x gradlew && ./gradlew assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: ForexTracker-APK
