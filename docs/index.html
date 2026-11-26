@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SessionEdge</title>
+<title>SessionEdge + OANDA</title>
 <style>
   body { margin:0; font-family:-apple-system,BlinkMacSystemFont,sans-serif; background:#0f172a; color:#f8fafc; }
   header { position:sticky; top:0; background:#1e293b; padding:12px 14px; border-bottom:1px solid #334155; z-index:10; }
@@ -16,35 +17,43 @@
   .lbl { font-size:11px; color:#64748b; font-weight:700; }
   .tab { background:#334155; color:#cbd5e1; padding:5px 10px; border-radius:14px; font-size:12px; white-space:nowrap; }
   .tab.active { background:#3b82f6; color:#fff; }
+  .tab.oanda { border:1px solid #0284c7; color:#38bdf8; }
+  .tab.oanda.active { background:#0284c7; color:#fff; }
   .stab { background:#0f172a; color:#94a3b8; padding:4px 9px; border-radius:10px; font-size:11px; border:1px solid #334155; white-space:nowrap; }
   .stab.active { background:#1d4ed8; color:#fff; border-color:#3b82f6; }
   .list { padding:10px; display:flex; flex-direction:column; gap:8px; }
-  .card { background:#1e293b; border-radius:10px; padding:12px; border:1px solid #334155; }
+  .card { background:#1e293b; border-radius:11px; padding:12px; border:1px solid #334155; }
+  .card.buy2 { border:1.5px solid #22c55e; }
+  .card.sell2 { border:1.5px solid #ef4444; }
   .card.sig { border-color:#3b82f6; }
-  .row1 { display:flex; justify-content:space-between; align-items:center; gap:6px; }
-  .pair { font-weight:700; font-size:16px; }
+  .row1 { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:6px; }
+  .pair { font-weight:800; font-size:16px; }
   .sess { font-size:10px; color:#94a3b8; margin-left:6px; }
-  .badge { padding:3px 8px; border-radius:6px; font-size:11px; font-weight:700; white-space:nowrap; }
-  .BUY { background:#14532d; color:#4ade80; }
-  .SELL { background:#7f1d1d; color:#f87171; }
+  .badge { padding:3px 8px; border-radius:6px; font-size:11px; font-weight:800; white-space:nowrap; }
+  .BUY { background:#14532d; color:#4ade80; border:1px solid #22c55e; }
+  .SELL { background:#7f1d1d; color:#f87171; border:1px solid #ef4444; }
+  .SPLIT { background:#422006; color:#fbbf24; border:1px solid #d97706; }
   .NONE, .LOW, .NO { background:#334155; color:#94a3b8; }
-  .bar { display:flex; height:8px; border-radius:4px; overflow:hidden; margin:8px 0; background:#334155; }
+  .bwrap { margin-bottom:6px; }
+  .blbl { display:flex; justify-content:space-between; font-size:10px; color:#94a3b8; margin-bottom:2px; font-weight:600; }
+  .bar { display:flex; height:7px; border-radius:4px; overflow:hidden; background:#334155; }
   .b-short { background:#ef4444; }
   .b-long { background:#22c55e; }
-  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; font-size:11px; color:#cbd5e1; text-align:center; }
-  .val { font-weight:700; font-size:13px; color:#f8fafc; }
-  .hot { color:#f87171; } .cold { color:#4ade80; }
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; font-size:10px; color:#94a3b8; text-align:center; margin-top:8px; padding-top:8px; border-top:1px solid #334155; }
+  .val { font-weight:800; font-size:12px; color:#f8fafc; margin-top:2px; }
+  .hot { color:#f87171; } .cold { color:#4ade80; } .cyan { color:#38bdf8; }
 </style>
 </head>
 <body>
 <header>
   <div class="top">
-    <div><h1>SessionEdge</h1><div class="ts" id="ts">Loading...</div></div>
+    <div><h1>SessionEdge <span style="color:#38bdf8;font-size:12px;">+ OANDA</span></h1><div class="ts" id="ts">Loading...</div></div>
     <button id="btn" onclick="load(true)">Refresh</button>
   </div>
   <div class="stale" id="stale"></div>
   <div class="tabs" id="ftabs">
     <div class="tab active" data-f="ALL" onclick="setFilter('ALL',this)">ALL (0)</div>
+    <div class="tab oanda" data-f="AGREED" onclick="setFilter('AGREED',this)">✓ 2/2 AGREED (0)</div>
     <div class="tab" data-f="SIGNALS" onclick="setFilter('SIGNALS',this)">SIGNALS (0)</div>
     <div class="tab" data-f="TIGER" onclick="setFilter('TIGER',this)">TIGER (0)</div>
     <div class="tab" data-f="LONDON" onclick="setFilter('LONDON',this)">LONDON (0)</div>
@@ -69,43 +78,28 @@ function setSort(s, el) { sortBy = s; document.querySelectorAll(".stab").forEach
 function rsiCls(v) { return v >= 70 ? "hot" : (v <= 30 ? "cold" : ""); }
 function setupScore(p) {
   let sc = (p.bias === "BUY" || p.bias === "SELL") ? 1000 : (p.bias === "LOW VOL" || p.bias === "NO DATA" ? -500 : 0);
+  if (p.agreed_2of2) sc += 200;
+  else if ((p.bias === "BUY" || p.bias === "SELL") && p.oanda_long != null) sc -= 80;
   sc += Math.abs(p.net_sale - p.net_buy);
   if (p.bias === "BUY" && p.rsi_15m && p.rsi_15m <= 35) sc += 40;
   if (p.bias === "SELL" && p.rsi_15m && p.rsi_15m >= 65) sc += 40;
   return sc;
 }
 function updateCounts() {
-  const counts = {
-    "ALL": allPairs.length,
-    "SIGNALS": allPairs.filter(p => p.bias === "BUY" || p.bias === "SELL").length,
-    "TIGER": allPairs.filter(p => (p.sessions || [p.session]).includes("TIGER")).length,
-    "LONDON": allPairs.filter(p => (p.sessions || [p.session]).includes("LONDON")).length,
-    "LONDON-NY": allPairs.filter(p => (p.sessions || [p.session]).includes("LONDON-NY")).length,
-    "NEW YORK": allPairs.filter(p => (p.sessions || [p.session]).includes("NEW YORK")).length
-  };
-  document.querySelectorAll("#ftabs .tab").forEach(t => {
-    const k = t.getAttribute("data-f");
-    t.textContent = k + " (" + (counts[k] ?? 0) + ")";
-  });
-}
-function checkStale(updatedStr) {
-  const box = document.getElementById("stale");
-  const m = /^(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s+EAT$/.exec(updatedStr || "");
-  if (!m) { box.style.display = "none"; return; }
-  const ageMin = Math.floor((Date.now() - Date.parse(m[1] + "T" + m[2] + ":00+03:00")) / 60000);
-  if (ageMin > 30) {
-    box.textContent = "⚠ Data is stale (" + ageMin + " mins old). Check scraper/scheduler.";
-    box.style.display = "block";
-  } else {
-    box.style.display = "none";
-  }
+  const c = { ALL: allPairs.length, AGREED: allPairs.filter(p => p.agreed_2of2).length, SIGNALS: allPairs.filter(p => p.bias==="BUY"||p.bias==="SELL").length, TIGER: allPairs.filter(p => (p.sessions||[]).includes("TIGER")).length, LONDON: allPairs.filter(p => (p.sessions||[]).includes("LONDON")).length, "LONDON-NY": allPairs.filter(p => (p.sessions||[]).includes("LONDON-NY")).length, "NEW YORK": allPairs.filter(p => (p.sessions||[]).includes("NEW YORK")).length };
+  document.querySelectorAll("#ftabs .tab").forEach(t => { const k = t.getAttribute("data-f"); t.textContent = (k==="AGREED"?"✓ 2/2 AGREED":k) + " (" + (c[k]??0) + ")"; });
 }
 function render() {
   updateCounts();
-  const list = document.getElementById("list");
-  let rows = allPairs.filter(p => filter === "SIGNALS" ? (p.bias === "BUY" || p.bias === "SELL") : (filter === "ALL" ? true : (p.sessions || [p.session]).includes(filter)));
-  rows.sort((a, b) => sortBy === "SETUP" ? setupScore(b) - setupScore(a) : (sortBy === "LOTS" ? b.total_lots - a.total_lots : (sortBy === "RSI" ? Math.abs((b.rsi_15m ?? 50) - 50) - Math.abs((a.rsi_15m ?? 50) - 50) : (sortBy === "NET" ? Math.abs(b.net_lots) - Math.abs(a.net_lots) : a.pair.localeCompare(b.pair)))));
-  list.innerHTML = rows.map(p => `<div class="card ${p.bias==='BUY'||p.bias==='SELL'?'sig':''}"><div class="row1"><div><span class="pair">${p.pair}</span><span class="sess">${(p.sessions||[p.session]).join(' • ')}</span></div><span class="badge ${(p.bias||'NONE').split(' ')[0]}">${p.bias}</span></div><div class="bar"><div class="b-short" style="width:${p.net_sale}%"></div><div class="b-long" style="width:${p.net_buy}%"></div></div><div class="grid"><div>Short<div class="val">${p.net_sale}%</div></div><div>Long<div class="val">${p.net_buy}%</div></div><div>Total Lots<div class="val">${Number(p.total_lots).toLocaleString()}</div></div><div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h??'-'}</div></div><div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m??'-'}</div></div><div>Net Lots<div class="val ${p.net_lots>0?'cold':(p.net_lots<0?'hot':'')}">${p.net_lots>0?'+':''}${Number(p.net_lots).toLocaleString()}</div></div></div></div>`).join("");
+  let rows = allPairs.filter(p => filter==="AGREED" ? p.agreed_2of2 : (filter==="SIGNALS" ? (p.bias==="BUY"||p.bias==="SELL") : (filter==="ALL" ? true : (p.sessions||[]).includes(filter))));
+  rows.sort((a,b) => sortBy==="SETUP" ? setupScore(b)-setupScore(a) : (sortBy==="LOTS" ? b.total_lots-a.total_lots : (sortBy==="RSI" ? Math.abs((b.rsi_15m??50)-50)-Math.abs((a.rsi_15m??50)-50) : (sortBy==="NET" ? Math.abs(b.net_lots)-Math.abs(a.net_lots) : a.pair.localeCompare(b.pair)))));
+  document.getElementById("list").innerHTML = rows.map(p => {
+    const isSig = p.bias==="BUY"||p.bias==="SELL", hasO = p.oanda_short!=null && p.oanda_long!=null;
+    const bLbl = isSig && hasO ? (p.agreed_2of2 ? `${p.bias} • 2/2` : `${p.bias} • 1/2 SPLIT`) : p.bias;
+    const bCls = isSig && hasO && !p.agreed_2of2 ? "SPLIT" : (p.bias||"NONE").split(" ")[0];
+    const cCls = p.agreed_2of2 ? (p.bias==="BUY"?"buy2":"sell2") : (isSig?"sig":"");
+    return `<div class="card ${cCls}"><div class="row1"><div><span class="pair">${p.pair}</span><span class="sess">${(p.sessions||[]).join(' • ')}</span></div><span class="badge ${bCls}">${bLbl}</span></div><div class="bwrap"><div class="blbl"><span>MFB: ${p.net_sale}% Short</span><span>${p.net_buy}% Long</span></div><div class="bar"><div class="b-short" style="width:${p.net_sale}%"></div><div class="b-long" style="width:${p.net_buy}%"></div></div></div>${hasO?`<div class="bwrap"><div class="blbl"><span class="cyan">OANDA: ${p.oanda_short}% Short</span><span class="cyan">${p.oanda_long}% Long</span></div><div class="bar"><div class="b-short" style="width:${p.oanda_short}%"></div><div class="b-long" style="width:${p.oanda_long}%"></div></div></div>`:""}<div class="grid"><div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h??'-'}</div></div><div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m??'-'}</div></div><div>Total Lots<div class="val">${Number(p.total_lots).toLocaleString()}</div></div><div>Net Lots<div class="val ${p.net_lots>0?'cold':(p.net_lots<0?'hot':'')}">${p.net_lots>0?'+':''}${Number(p.net_lots).toLocaleString()}</div></div></div></div>`;
+  }).join("");
 }
 async function load(manual) {
   const btn = document.getElementById("btn");
@@ -114,8 +108,8 @@ async function load(manual) {
     const r = await fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" });
     const d = await r.json();
     const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-    const sc = d.fingerprint?.sentiment_since ? " • Sent since " + d.fingerprint.sentiment_since : ""; document.getElementById("ts").textContent = "Data: " + d.updated + sc + " (Checked " + now + ")";
-    checkStale(d.updated);
+    const sc = d.fingerprint?.sentiment_since ? " • Sent since " + d.fingerprint.sentiment_since : "";
+    document.getElementById("ts").textContent = "Data: " + d.updated + sc + " (Checked " + now + ")";
     allPairs = d.pairs || [];
     render();
     if (manual) { btn.textContent = "Updated ✓"; setTimeout(() => { btn.textContent = "Refresh"; btn.disabled = false; }, 1200); }
