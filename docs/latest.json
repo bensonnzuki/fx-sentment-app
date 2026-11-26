@@ -1,11 +1,11 @@
 {
-  "updated": "2026-11-26 22:20 EAT",
+  "updated": "2026-11-26 22:24 EAT",
   "fingerprint": {
     "source": "direct",
-    "data_hash": "8d9df8d27da3",
+    "data_hash": "eb985c31d850",
     "diag": "direct:status=200,len=721447,added=28",
     "sentiment_changed": true,
-    "sentiment_since": "2026-11-26 22:20 EAT"
+    "sentiment_since": "2026-11-26 22:24 EAT"
   },
   "pairs": [
     {
@@ -72,11 +72,11 @@
       "rsi_1h": 55.3,
       "rsi_15m": 43.3,
       "net_sale": 42.0,
-      "net_sale_vol": 452.58,
+      "net_sale_vol": 452.62,
       "net_buy": 58.0,
       "net_buy_vol": 617.38,
-      "total_lots": 1069.96,
-      "net_lots": 164.8,
+      "total_lots": 1070.0,
+      "net_lots": 164.76,
       "bias": "NONE"
     },
     {
@@ -256,7 +256,7 @@
       ],
       "session": "TIGER \u2022 LONDON",
       "rsi_1h": 60.5,
-      "rsi_15m": 61.5,
+      "rsi_15m": 61.4,
       "net_sale": 84.0,
       "net_sale_vol": 245.78,
       "net_buy": 16.0,
@@ -293,11 +293,11 @@
       "rsi_1h": 51.6,
       "rsi_15m": 42.4,
       "net_sale": 22.0,
-      "net_sale_vol": 3835.41,
+      "net_sale_vol": 3835.57,
       "net_buy": 78.0,
-      "net_buy_vol": 13383.36,
-      "total_lots": 17218.77,
-      "net_lots": 9547.95,
+      "net_buy_vol": 13383.33,
+      "total_lots": 17218.9,
+      "net_lots": 9547.76,
       "bias": "SELL"
     },
     {
@@ -313,9 +313,9 @@
       "net_sale": 24.0,
       "net_sale_vol": 1335.76,
       "net_buy": 76.0,
-      "net_buy_vol": 4212.18,
-      "total_lots": 5547.94,
-      "net_lots": 2876.42,
+      "net_buy_vol": 4212.17,
+      "total_lots": 5547.93,
+      "net_lots": 2876.41,
       "bias": "SELL"
     },
     {
@@ -329,11 +329,11 @@
       "rsi_1h": 57.5,
       "rsi_15m": 52.7,
       "net_sale": 44.0,
-      "net_sale_vol": 404.71,
+      "net_sale_vol": 404.7,
       "net_buy": 56.0,
       "net_buy_vol": 515.78,
-      "total_lots": 920.49,
-      "net_lots": 111.07,
+      "total_lots": 920.48,
+      "net_lots": 111.08,
       "bias": "NONE"
     },
     {
@@ -379,11 +379,11 @@
       "rsi_1h": 62.2,
       "rsi_15m": 48.7,
       "net_sale": 28.0,
-      "net_sale_vol": 132.33,
+      "net_sale_vol": 132.31,
       "net_buy": 72.0,
       "net_buy_vol": 332.83,
-      "total_lots": 465.16,
-      "net_lots": 200.5,
+      "total_lots": 465.14,
+      "net_lots": 200.52,
       "bias": "NONE"
     },
     {
@@ -397,11 +397,11 @@
       "rsi_1h": 58.9,
       "rsi_15m": 58.2,
       "net_sale": 11.0,
-      "net_sale_vol": 91.27,
+      "net_sale_vol": 91.26,
       "net_buy": 89.0,
       "net_buy_vol": 749.7,
-      "total_lots": 840.97,
-      "net_lots": 658.43,
+      "total_lots": 840.96,
+      "net_lots": 658.44,
       "bias": "SELL"
     },
     {
@@ -431,11 +431,11 @@
       "rsi_1h": 57.4,
       "rsi_15m": 57.4,
       "net_sale": 30.0,
-      "net_sale_vol": 85.54,
+      "net_sale_vol": 85.52,
       "net_buy": 70.0,
       "net_buy_vol": 196.7,
-      "total_lots": 282.24,
-      "net_lots": 111.16,
+      "total_lots": 282.22,
+      "net_lots": 111.18,
       "bias": "NONE"
     },
     {
