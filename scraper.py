@@ -420,7 +420,7 @@ def fetch_oanda_all(pairs):
             if not m:
                 m = re.search(rf"\b{p}\b.{{1,80}}?(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
             if m:
-                os_pct, ol_pct = float(m.group(1)), float(m.group(2))
+                ol_pct, os_pct = float(m.group(1)), float(m.group(2))
                 if 98.0 <= (os_pct + ol_pct) <= 102.0:
                     out[p] = {
                         "oanda_short": os_pct, "oanda_long": ol_pct,
