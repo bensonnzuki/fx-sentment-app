@@ -421,8 +421,10 @@ def fetch_oanda_all(pairs):
             if not m:
                 m = re.search(rf"\b{p}\b.{{1,80}}?(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
             if m:
-                # OANDA's column is "% trades that sell / buy": the SELL (short) share comes first.
-                os_pct, ol_pct = float(m.group(1)), float(m.group(2))
+                # The header says "% trades that sell / buy", but the numbers are BUY first:
+                # the page's own labels match it (GOLD 71% 29% = "71% traders are buying",
+                # OILWTI 46% 54% = "54% traders are selling"). First = long, second = short.
+                ol_pct, os_pct = float(m.group(1)), float(m.group(2))
                 if 98.0 <= (os_pct + ol_pct) <= 102.0:
                     out[p] = {
                         "oanda_short": os_pct, "oanda_long": ol_pct,
@@ -529,33 +531,38 @@ def append_oanda_to_excel(rows, changed):
 
         for name in wb.sheetnames:
             ws = wb[name]
-            # Remove old unstyled Q/R/S columns if present
-            for c in range(ws.max_column, 11, -1):
-                hv = str(ws.cell(1, c).value or "").strip()
-                if hv in ("OANDA Short %", "OANDA Long %", "2/2 Agreed") and c > 14:
+            # Unmerge M1:O1 if merged for Last Updated
+            for rng in list(ws.merged_cells.ranges):
+                if rng.min_row == 1 and rng.max_row == 1 and rng.min_col >= 12:
+                    ws.unmerge_cells(str(rng))
+
+            # Delete old P/Q/R/S OANDA columns (col >= 15)
+            for c in range(ws.max_column, 14, -1):
+                hv = str(ws.cell(1, c).value or "").strip().upper()
+                if "OANDA" in hv or "AGREED" in hv:
                     ws.delete_cols(c, 1)
 
-            # Move "Last Updated:" note from M1 (col 13) to P1 (col 16) if on main sheet
+            # Move Last Updated note out to P1 (col 16)
             if name != "History":
-                for c in (12, 13, 14):
+                lu_txt = ""
+                for c in range(12, 18):
                     v = str(ws.cell(1, c).value or "")
                     if v.startswith("Last Updated"):
-                        ws.cell(1, 16, v)
-                        ws.cell(1, 16).font = copy(ws.cell(1, c).font)
+                        lu_txt = v
                         ws.cell(1, c, None)
+                if lu_txt:
+                    ws.cell(1, 16, lu_txt).font = Font(bold=True, size=10)
 
-            # Place styled headers in L1, M1, N1 (cols 12, 13, 14) cloning K1 (BIAS)
-            titles = ["OANDA SHORT %", "OANDA LONG %", "2/2 AGREED"]
-            widths = [15, 15, 13]
-            for idx, (title, w) in enumerate(zip(titles, widths)):
+            # Style L1, M1, N1 (cols 12, 13, 14) flush next to K1 (BIAS)
+            headers = ["OANDA SHORT %", "OANDA LONG %", "2/2 AGREED"]
+            col_widths = [15, 15, 13]
+            for idx in range(3):
                 col = 12 + idx
-                cell = ws.cell(1, col, title)
+                cell = ws.cell(1, col, headers[idx])
                 clone_style(ws.cell(1, 11), cell)
-                col_letter = openpyxl.utils.get_column_letter(col)
-                ws.column_dimensions[col_letter].width = w
+                ws.column_dimensions[openpyxl.utils.get_column_letter(col)].width = col_widths[idx]
 
             for r_idx in range(2, ws.max_row + 1):
-                # Find pair name in columns A..C
                 pair_val = ""
                 for c_idx in range(1, 4):
                     cand = str(ws.cell(r_idx, c_idx).value or "").strip().upper()
@@ -568,8 +575,7 @@ def append_oanda_to_excel(rows, changed):
                     continue
 
                 d = by_pair[pair_val]
-                o_s = d.get("oanda_short")
-                o_l = d.get("oanda_long")
+                o_s, o_l = d.get("oanda_short"), d.get("oanda_long")
                 ag = "YES" if d.get("agreed_2of2") else "NO"
 
                 c_s = ws.cell(r_idx, 12, (o_s / 100.0) if o_s is not None else "-")
@@ -586,10 +592,10 @@ def append_oanda_to_excel(rows, changed):
 
                 if ag == "YES":
                     c_a.fill = PatternFill("solid", fgColor="DCFCE7")
-                    c_a.font = Font(bold=True, color="166534", name=ws.cell(r_idx, 11).font.name, size=ws.cell(r_idx, 11).font.size)
+                    c_a.font = Font(bold=True, color="166534", size=10)
                 else:
                     c_a.fill = PatternFill("solid", fgColor="F1F5F9")
-                    c_a.font = Font(bold=True, color="64748B", name=ws.cell(r_idx, 11).font.name, size=ws.cell(r_idx, 11).font.size)
+                    c_a.font = Font(bold=True, color="64748B", size=10)
 
         wb.save(p)
         print("Excel OANDA columns formatted inside table (L, M, N)!")
