@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-26 18:20 EAT",
+  "updated": "2026-11-26 18:25 EAT",
   "pairs": [
     {
       "pair": "CHFJPY",
@@ -283,7 +283,7 @@
       "net_buy_vol": 55.98,
       "total_lots": 274.43,
       "net_lots": -162.47,
-      "rsi_1h": 54.8,
+      "rsi_1h": 54.7,
       "rsi_15m": 65.6,
       "bias": "BUY"
     },
@@ -297,7 +297,7 @@
       "total_lots": 204.93,
       "net_lots": -94.65,
       "rsi_1h": 58.2,
-      "rsi_15m": 70.3,
+      "rsi_15m": 70.4,
       "bias": "NONE"
     },
     {
