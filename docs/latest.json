@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-26 21:32 EAT",
+  "updated": "2026-11-26 21:35 EAT",
   "fingerprint": {
-    "source": "https://r.jina.ai/https://www.myfxbook.com/community/outlook?cb=1795717958",
-    "page_len": 85084,
+    "source": "https://r.jina.ai/https://www.myfxbook.com/community/outlook?cb=1795718103",
+    "page_len": 85082,
     "data_hash": "6d97a7d58942",
-    "sentiment_changed": true
+    "sentiment_changed": false
   },
   "pairs": [
     {
@@ -75,7 +75,7 @@
       "total_lots": 1070.31,
       "net_lots": 165.31,
       "rsi_1h": 57.0,
-      "rsi_15m": 47.0,
+      "rsi_15m": 46.9,
       "bias": "NONE"
     },
     {
@@ -127,7 +127,7 @@
       "total_lots": 576.73,
       "net_lots": -176.79,
       "rsi_1h": 48.8,
-      "rsi_15m": 46.6,
+      "rsi_15m": 46.7,
       "bias": "NONE"
     },
     {
@@ -227,7 +227,7 @@
       "net_buy_vol": 362.42,
       "total_lots": 450.94,
       "net_lots": 273.9,
-      "rsi_1h": 57.2,
+      "rsi_1h": 57.3,
       "rsi_15m": 54.5,
       "bias": "SELL"
     },
@@ -278,7 +278,7 @@
       "total_lots": 229.63,
       "net_lots": -126.95,
       "rsi_1h": 57.4,
-      "rsi_15m": 57.9,
+      "rsi_15m": 57.8,
       "bias": "BUY"
     },
     {
@@ -349,7 +349,7 @@
       "net_buy_vol": 518.26,
       "total_lots": 1684.73,
       "net_lots": -648.21,
-      "rsi_1h": 55.8,
+      "rsi_1h": 55.7,
       "rsi_15m": 56.4,
       "bias": "NONE"
     },
