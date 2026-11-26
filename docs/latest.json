@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-26 21:05 EAT",
+  "updated": "2026-11-26 21:10 EAT",
   "pairs": [
     {
       "pair": "USDJPY",
@@ -343,7 +343,7 @@
       "net_buy_vol": 519.58,
       "total_lots": 1685.85,
       "net_lots": -646.69,
-      "rsi_1h": 55.7,
+      "rsi_1h": 55.8,
       "rsi_15m": 57.6,
       "bias": "NONE"
     },
