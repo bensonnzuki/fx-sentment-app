@@ -1,11 +1,11 @@
 {
-  "updated": "2026-11-26 21:41 EAT",
+  "updated": "2026-11-26 21:42 EAT",
   "fingerprint": {
     "source": "jina",
     "page_len": 77320,
     "data_hash": "ea59274bdbad",
-    "diag": "browser:status=403,len=0,added=0 | jina:status=200,len=77320,added=28",
-    "sentiment_changed": true,
+    "diag": "browser:status=200,len=44793,added=0 | jina:status=200,len=77320,added=28",
+    "sentiment_changed": false,
     "sentiment_since": "21:41"
   },
   "pairs": [
@@ -352,7 +352,7 @@
       "total_lots": 1685.85,
       "net_lots": -646.69,
       "rsi_1h": 55.8,
-      "rsi_15m": 56.3,
+      "rsi_15m": 56.4,
       "bias": "NONE"
     },
     {
