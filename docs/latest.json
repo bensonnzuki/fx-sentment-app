@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-26 17:55 EAT",
+  "updated": "2026-11-26 18:00 EAT",
   "pairs": [
     {
       "pair": "CHFJPY",
@@ -10,8 +10,8 @@
       "net_buy_vol": 148.03,
       "total_lots": 241.92,
       "net_lots": 54.14,
-      "rsi_1h": 48.1,
-      "rsi_15m": 51.4,
+      "rsi_1h": 46.4,
+      "rsi_15m": 46.8,
       "bias": "NONE"
     },
     {
@@ -23,8 +23,8 @@
       "net_buy_vol": 761.99,
       "total_lots": 855.42,
       "net_lots": 668.56,
-      "rsi_1h": 58.6,
-      "rsi_15m": 55.9,
+      "rsi_1h": 60.4,
+      "rsi_15m": 59.9,
       "bias": "SELL"
     },
     {
@@ -36,8 +36,8 @@
       "net_buy_vol": 283.23,
       "total_lots": 478.05,
       "net_lots": 88.41,
-      "rsi_1h": 59.3,
-      "rsi_15m": 48.1,
+      "rsi_1h": 54.9,
+      "rsi_15m": 51.1,
       "bias": "NONE"
     },
     {
@@ -49,8 +49,8 @@
       "net_buy_vol": 383.37,
       "total_lots": 417.67,
       "net_lots": 349.07,
-      "rsi_1h": 55.4,
-      "rsi_15m": 48.3,
+      "rsi_1h": 52.3,
+      "rsi_15m": 46.7,
       "bias": "SELL"
     },
     {
@@ -62,8 +62,8 @@
       "net_buy_vol": 2307.42,
       "total_lots": 2838.87,
       "net_lots": 1775.97,
-      "rsi_1h": 57.7,
-      "rsi_15m": 54.0,
+      "rsi_1h": 59.3,
+      "rsi_15m": 59.8,
       "bias": "SELL"
     },
     {
@@ -75,8 +75,8 @@
       "net_buy_vol": 618.55,
       "total_lots": 1059.0,
       "net_lots": 178.1,
-      "rsi_1h": 64.1,
-      "rsi_15m": 57.0,
+      "rsi_1h": 60.0,
+      "rsi_15m": 54.9,
       "bias": "NONE"
     },
     {
@@ -88,8 +88,8 @@
       "net_buy_vol": 532.4,
       "total_lots": 619.43,
       "net_lots": 445.37,
-      "rsi_1h": 58.1,
-      "rsi_15m": 52.6,
+      "rsi_1h": 60.0,
+      "rsi_15m": 58.7,
       "bias": "SELL"
     },
     {
@@ -101,7 +101,7 @@
       "net_buy_vol": 1669.61,
       "total_lots": 1812.09,
       "net_lots": 1527.13,
-      "rsi_1h": 54.4,
+      "rsi_1h": 51.1,
       "rsi_15m": 48.6,
       "bias": "SELL"
     },
@@ -114,8 +114,8 @@
       "net_buy_vol": 5742.01,
       "total_lots": 7404.79,
       "net_lots": 4079.23,
-      "rsi_1h": 59.3,
-      "rsi_15m": 59.2,
+      "rsi_1h": 62.9,
+      "rsi_15m": 69.6,
       "bias": "SELL"
     },
     {
@@ -127,8 +127,8 @@
       "net_buy_vol": 1459.49,
       "total_lots": 2894.41,
       "net_lots": 24.57,
-      "rsi_1h": 56.6,
-      "rsi_15m": 59.3,
+      "rsi_1h": 62.1,
+      "rsi_15m": 65.4,
       "bias": "NONE"
     },
     {
@@ -140,8 +140,8 @@
       "net_buy_vol": 572.05,
       "total_lots": 1258.48,
       "net_lots": -114.38,
-      "rsi_1h": 50.2,
-      "rsi_15m": 46.5,
+      "rsi_1h": 50.5,
+      "rsi_15m": 46.1,
       "bias": "NONE"
     },
     {
@@ -153,8 +153,8 @@
       "net_buy_vol": 177.13,
       "total_lots": 233.28,
       "net_lots": 120.98,
-      "rsi_1h": 51.0,
-      "rsi_15m": 46.0,
+      "rsi_1h": 47.9,
+      "rsi_15m": 37.0,
       "bias": "SELL"
     },
     {
@@ -166,8 +166,8 @@
       "net_buy_vol": 331.46,
       "total_lots": 459.0,
       "net_lots": 203.92,
-      "rsi_1h": 67.9,
-      "rsi_15m": 54.9,
+      "rsi_1h": 66.5,
+      "rsi_15m": 58.3,
       "bias": "NONE"
     },
     {
@@ -179,8 +179,8 @@
       "net_buy_vol": 13366.43,
       "total_lots": 17265.36,
       "net_lots": 9467.5,
-      "rsi_1h": 65.3,
-      "rsi_15m": 58.9,
+      "rsi_1h": 60.3,
+      "rsi_15m": 56.7,
       "bias": "SELL"
     },
     {
@@ -192,8 +192,8 @@
       "net_buy_vol": 310.13,
       "total_lots": 346.72,
       "net_lots": 273.54,
-      "rsi_1h": 57.1,
-      "rsi_15m": 46.4,
+      "rsi_1h": 56.3,
+      "rsi_15m": 51.3,
       "bias": "SELL"
     },
     {
@@ -205,8 +205,8 @@
       "net_buy_vol": 215.09,
       "total_lots": 311.8,
       "net_lots": 118.38,
-      "rsi_1h": 62.7,
-      "rsi_15m": 47.3,
+      "rsi_1h": 60.3,
+      "rsi_15m": 54.1,
       "bias": "NONE"
     },
     {
@@ -218,8 +218,8 @@
       "net_buy_vol": 754.07,
       "total_lots": 833.49,
       "net_lots": 674.65,
-      "rsi_1h": 66.0,
-      "rsi_15m": 61.9,
+      "rsi_1h": 65.9,
+      "rsi_15m": 68.4,
       "bias": "SELL"
     },
     {
@@ -231,8 +231,8 @@
       "net_buy_vol": 273.01,
       "total_lots": 349.47,
       "net_lots": 196.55,
-      "rsi_1h": 54.0,
-      "rsi_15m": 45.5,
+      "rsi_1h": 52.7,
+      "rsi_15m": 42.8,
       "bias": "SELL"
     },
     {
@@ -244,8 +244,8 @@
       "net_buy_vol": 4217.31,
       "total_lots": 5554.14,
       "net_lots": 2880.48,
-      "rsi_1h": 59.6,
-      "rsi_15m": 48.8,
+      "rsi_1h": 54.3,
+      "rsi_15m": 52.4,
       "bias": "SELL"
     },
     {
@@ -257,8 +257,8 @@
       "net_buy_vol": 2143.26,
       "total_lots": 2441.66,
       "net_lots": 1844.86,
-      "rsi_1h": 56.1,
-      "rsi_15m": 62.1,
+      "rsi_1h": 58.1,
+      "rsi_15m": 54.2,
       "bias": "SELL"
     },
     {
@@ -270,8 +270,8 @@
       "net_buy_vol": 244.18,
       "total_lots": 326.81,
       "net_lots": 161.55,
-      "rsi_1h": 60.3,
-      "rsi_15m": 51.2,
+      "rsi_1h": 58.7,
+      "rsi_15m": 60.3,
       "bias": "SELL"
     },
     {
@@ -283,8 +283,8 @@
       "net_buy_vol": 55.98,
       "total_lots": 274.43,
       "net_lots": -162.47,
-      "rsi_1h": 55.8,
-      "rsi_15m": 50.3,
+      "rsi_1h": 54.8,
+      "rsi_15m": 55.9,
       "bias": "BUY"
     },
     {
@@ -296,8 +296,8 @@
       "net_buy_vol": 55.14,
       "total_lots": 204.93,
       "net_lots": -94.65,
-      "rsi_1h": 57.7,
-      "rsi_15m": 61.2,
+      "rsi_1h": 58.1,
+      "rsi_15m": 59.6,
       "bias": "NONE"
     },
     {
@@ -309,8 +309,8 @@
       "net_buy_vol": 64.93,
       "total_lots": 539.98,
       "net_lots": -410.12,
-      "rsi_1h": 48.1,
-      "rsi_15m": 43.4,
+      "rsi_1h": 43.5,
+      "rsi_15m": 41.8,
       "bias": "BUY"
     },
     {
@@ -322,8 +322,8 @@
       "net_buy_vol": 223.89,
       "total_lots": 596.51,
       "net_lots": -148.73,
-      "rsi_1h": 50.4,
-      "rsi_15m": 51.1,
+      "rsi_1h": 46.5,
+      "rsi_15m": 45.4,
       "bias": "NONE"
     },
     {
@@ -335,8 +335,8 @@
       "net_buy_vol": 1202.96,
       "total_lots": 1321.38,
       "net_lots": 1084.54,
-      "rsi_1h": 55.9,
-      "rsi_15m": 51.6,
+      "rsi_1h": 55.2,
+      "rsi_15m": 59.6,
       "bias": "SELL"
     },
     {
@@ -348,8 +348,8 @@
       "net_buy_vol": 948.66,
       "total_lots": 1348.61,
       "net_lots": 548.71,
-      "rsi_1h": 53.0,
-      "rsi_15m": 48.0,
+      "rsi_1h": 54.6,
+      "rsi_15m": 51.6,
       "bias": "NONE"
     },
     {
@@ -361,8 +361,8 @@
       "net_buy_vol": 532.7,
       "total_lots": 1697.71,
       "net_lots": -632.31,
-      "rsi_1h": 49.9,
-      "rsi_15m": 49.2,
+      "rsi_1h": 54.2,
+      "rsi_15m": 62.6,
       "bias": "NONE"
     }
   ]
