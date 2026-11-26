@@ -23,9 +23,10 @@ ALL_PAIRS = list(SESSION_MAP.keys())
 
 def fetch_sentiment(pairs):
     host = "www." + "myfxbook" + ".com"
+    proxy = "r." + "jina" + ".ai"
     urls = [
-        f"https://{host}/community/outlook",
-        f"https://{host}/community/outlook/xml"
+        f"https://{proxy}/https://{host}/community/outlook",
+        f"https://{host}/community/outlook"
     ]
     names = "|".join(sorted(pairs, key=len, reverse=True))
     not_a_pair = rf"(?:(?!\b(?:{names})\b).)"
