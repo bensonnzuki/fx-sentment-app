@@ -82,27 +82,47 @@ def parse_outlook(raw, pairs, out):
                 matched += 1
     return matched, text
 
+def fetch_browser_html(url):
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            b = p.chromium.launch(headless=True, args=["--disable-blink-features=AutomationControlled"])
+            ctx = b.new_context(user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
+            page = ctx.new_page()
+            page.goto(url, wait_until="domcontentloaded", timeout=35000)
+            page.wait_for_timeout(6000)
+            html = page.content()
+            b.close()
+            return html
+    except Exception as e:
+        print("Browser fetch warning:", e)
+        return ""
+
 def fetch_sentiment(pairs):
-    cb = int(time.time())
     host = "www." + "myfxbook" + ".com"
     proxy = "r." + "jina" + ".ai"
+    target_url = f"https://{host}/community/outlook"
     sources = [
-        ("direct", f"https://{host}/community/outlook", {}),
-        ("jina", f"https://{proxy}/https://{host}/community/outlook?cb={cb}", {"X-No-Cache": "true"})
+        ("browser", target_url, {}),
+        ("jina", f"https://{proxy}/{target_url}", {})
     ]
     out, logs, raw_len, used = {}, [], 0, []
     for label, u, hdrs in sources:
         if len(out) == len(pairs):
             break
         try:
-            res = requests.get(u, headers=hdrs, impersonate="chrome124", timeout=25)
-            raw = res.text
+            if label == "browser":
+                raw = fetch_browser_html(u)
+                status = 200 if len(raw) > 10000 else 403
+            else:
+                res = requests.get(u, headers=hdrs, impersonate="chrome124", timeout=25)
+                raw, status = res.text, res.status_code
             if label == "direct":
                 open("/tmp/myfxbook_direct_debug.html", "w").write(raw[:200000])
             added, clean_txt = parse_outlook(raw, pairs, out)
             if label == "direct":
                 open("/tmp/myfxbook_direct_clean.txt", "w").write(clean_txt[:100000])
-            logs.append(f"{label}:status={res.status_code},len={len(raw)},added={added}")
+            logs.append(f"{label}:status={status},len={len(raw)},added={added}")
             if added > 0:
                 used.append(label)
                 raw_len = len(raw)
