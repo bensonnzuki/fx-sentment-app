@@ -22,7 +22,7 @@
   .stab { background:#0f172a; color:#94a3b8; padding:3px 8px; border-radius:10px; font-size:10px; border:1px solid #334155; white-space:nowrap; }
   .stab.active { background:#1d4ed8; color:#fff; border-color:#3b82f6; }
   .list { padding:8px; display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; }
-  .card { background:#1e293b; border-radius:11px; padding:9px; border:1px solid #334155; min-width:0; }
+  .card { background:#1e293b; border-radius:11px; padding:9px; border:1px solid #334155 !important; box-shadow:none !important; min-width:0; }
   .row1 { display:flex; justify-content:space-between; align-items:center; gap:4px; }
   .pair { font-weight:800; font-size:14px; }
   .sess { display:block; font-size:9px; color:#94a3b8; margin:2px 0 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -31,14 +31,8 @@
   .SELL { background:#7f1d1d; color:#f87171; border:1px solid #ef4444; }
   .SPLIT { background:#422006; color:#fbbf24; border:1px solid #d97706; }
   .NEWS { background:#78350f; color:#fde047; border:1px solid #eab308; }
-  .card.buy2 { border-color:#22c55e; box-shadow:0 0 0 1px rgba(34,197,94,0.25); }
-  .card.sell2 { border-color:#ef4444; box-shadow:0 0 0 1px rgba(239,68,68,0.25); }
-  .card.news { border-color:#eab308; }
   .nwarn { background:#451a03; color:#fde047; border:1px solid #ca8a04; border-radius:5px; padding:3px 5px; font-size:9px; font-weight:700; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .NEWS { background:#78350f; color:#fde047; border:1px solid #eab308; }
-  .card.buy2 { border-color:#22c55e; box-shadow:0 0 0 1px rgba(34,197,94,0.25); }
-  .card.sell2 { border-color:#ef4444; box-shadow:0 0 0 1px rgba(239,68,68,0.25); }
-  .card.news { border-color:#eab308; }
   .nwarn { background:#451a03; color:#fde047; border:1px solid #ca8a04; border-radius:5px; padding:3px 5px; font-size:9px; font-weight:700; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .NONE, .LOW, .NO { background:#334155; color:#94a3b8; }
   .bwrap { margin-bottom:6px; }
@@ -126,7 +120,7 @@ function render() {
     const cCls = p.news_warning ? "news" : (p.agreed_2of2 ? (p.bias==="BUY"?"buy2":"sell2") : (isSig?"sig":""));
     const nBadge = p.news_warning ? `<span class="badge NEWS">⚠️ NEWS</span> ` : "";
     const nBanner = p.news_warning ? `<div class="nwarn" title="${p.news_warning}">⚠️ ${p.news_warning}</div>` : "";
-    return `<div class="card ${cCls}"><div class="row1"><span class="pair">${p.pair}</span><div>${nBadge}<span class="badge ${bCls}">${bLbl}</span></div></div><span class="sess">${(p.sessions||[]).join(' • ')}</span>${nBanner}${nBanner}<div class="bwrap"><div class="blbl"><span>MFB ${p.net_sale}% S</span><span>${p.net_buy}% L</span></div><div class="bar"><div class="b-short" style="width:${p.net_sale}%"></div><div class="b-long" style="width:${p.net_buy}%"></div></div></div>${hasO?`<div class="bwrap"><div class="blbl"><span class="cyan">OANDA ${p.oanda_short}% S</span><span class="cyan">${p.oanda_long}% L</span></div><div class="bar"><div class="b-short" style="width:${p.oanda_short}%"></div><div class="b-long" style="width:${p.oanda_long}%"></div></div></div>`:""}<div class="grid"><div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h??'-'}</div></div><div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m??'-'}</div></div><div>Total Lots<div class="val">${Math.round(p.total_lots).toLocaleString()}</div></div><div>Net Lots<div class="val ${p.net_lots>0?'cold':(p.net_lots<0?'hot':'')}">${p.net_lots>0?'+':''}${Math.round(p.net_lots).toLocaleString()}</div></div></div></div>`;
+    return `<div class="card"><div class="row1"><span class="pair">${p.pair}</span><div>${nBadge}<span class="badge ${bCls}">${bLbl}</span></div></div><span class="sess">${(p.sessions||[]).join(' • ')}</span>${nBanner}${nBanner}<div class="bwrap"><div class="blbl"><span>MFB ${p.net_sale}% S</span><span>${p.net_buy}% L</span></div><div class="bar"><div class="b-short" style="width:${p.net_sale}%"></div><div class="b-long" style="width:${p.net_buy}%"></div></div></div>${hasO?`<div class="bwrap"><div class="blbl"><span class="cyan">OANDA ${p.oanda_short}% S</span><span class="cyan">${p.oanda_long}% L</span></div><div class="bar"><div class="b-short" style="width:${p.oanda_short}%"></div><div class="b-long" style="width:${p.oanda_long}%"></div></div></div>`:""}<div class="grid"><div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h??'-'}</div></div><div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m??'-'}</div></div><div>Total Lots<div class="val">${Math.round(p.total_lots).toLocaleString()}</div></div><div>Net Lots<div class="val ${p.net_lots>0?'cold':(p.net_lots<0?'hot':'')}">${p.net_lots>0?'+':''}${Math.round(p.net_lots).toLocaleString()}</div></div></div></div>`;
   }).join("");
 }
 async function load(manual) {
