@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-27 21:45 EAT",
+  "updated": "2026-11-27 21:50 EAT",
   "fingerprint": {
     "source": "direct",
     "data_hash": "fc0d1e9f8eb0",
     "diag": "direct:status=200,len=721453,added=30 | browser:status=ok,len=44772,added=0 | jina:status=200,len=83544,added=0",
-    "sentiment_changed": true,
+    "sentiment_changed": false,
     "sentiment_since": "2026-11-27 21:45 EAT"
   },
   "pairs": [
@@ -260,8 +260,8 @@
       ],
       "session": "ASIA \u2022 LONDON",
       "rsi_4h": 53.5,
-      "rsi_1h": 44.1,
-      "rsi_15m": 44.8,
+      "rsi_1h": 44.4,
+      "rsi_15m": 44.9,
       "ob_time": "-",
       "os_time": "-",
       "price_action": "-",
@@ -437,7 +437,7 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_4h": 60.1,
+      "rsi_4h": 60.0,
       "rsi_1h": 60.6,
       "rsi_15m": 49.8,
       "ob_time": "-",
@@ -959,7 +959,7 @@
       "session": "COMMODITIES \u2022 LONDON \u2022 LONDON-NY \u2022 NEW YORK",
       "rsi_4h": 55.0,
       "rsi_1h": 47.4,
-      "rsi_15m": 33.1,
+      "rsi_15m": 33.0,
       "ob_time": "-",
       "os_time": "19:55 EAT (82.89)",
       "price_action": "Sell 7 pips in continuation",
