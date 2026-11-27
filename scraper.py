@@ -626,8 +626,8 @@ def main():
     if not sent:
         raise RuntimeError("0 pairs matched from all sources")
     r1_raw = fetch_rsi(ALL_PAIRS, "30d", "1h", 60, return_4h=True)
-    r1 = {p: v for p, v in r1_raw.items()}
-    r4 = {p: v for p, v in r1_raw.items()}
+    r1 = {p: v.__getitem__(0) for p, v in r1_raw.items()}
+    r4 = {p: v.__getitem__(1) for p, v in r1_raw.items()}
     r15_raw = fetch_rsi(ALL_PAIRS, "5d", "15m", 15, return_price=True)
     r15 = {p: val[0] for p, val in r15_raw.items()}
     rng = fetch_range_used(ALL_PAIRS)
