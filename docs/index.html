@@ -72,7 +72,7 @@
     <div class="tab oanda" data-f="AGREED" onclick="setFilter('AGREED',this)">INSYNC (0)</div>
     <div class="tab" data-f="SIGNALS" onclick="setFilter('SIGNALS',this)">SIGNALS (0)</div>
     <div class="tab" style="border:1px solid #eab308;color:#fde047;" data-f="NEWS" onclick="setFilter('NEWS',this)">⚠️ NEWS (0)</div>
-    <div class="tab" style="border:1px solid #22c55e;color:#4ade80;" data-f="EXCEL" onclick="setFilter('EXCEL',this)">EXCEL</div>
+    <div class="tab" style="border:1px solid #22c55e;color:#4ade80;" data-f="EXCEL" onclick="setFilter('EXCEL',this)">REPORT</div>
   </div>
   <div class="tabs">
     <span class="lbl">SORT:</span>
@@ -116,7 +116,7 @@ function updateCounts() {
   const labels = { AGREED: "INSYNC", "NEW YORK": "NEW-YORK", NEWS: "⚠️ NEWS" };
   document.querySelectorAll("#ftabs .tab").forEach(t => {
     const k = t.getAttribute("data-f");
-    t.textContent = k === "EXCEL" ? "EXCEL" : (labels[k] || k) + " (" + (c[k] ?? 0) + ")";
+    t.textContent = k === "EXCEL" ? "REPORT" : (labels[k] || k) + " (" + (c[k] ?? 0) + ")";
   });
 }
 function downloadCSV() {
