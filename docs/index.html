@@ -93,7 +93,7 @@
 <script>
 const DATA_URL = "./latest.json";
 let allPairs = [], filter = "ALL", sortBy = "SETUP";
-function setFilter(f, el) { filter = f; document.querySelectorAll(".tab").forEach(t => t.classList.remove("active")); el.classList.add("active"); render(); }
+function setFilter(f, el) { filter = f; document.querySelectorAll(".tab").forEach(t => t.classList.remove("active")); el.classList.add("active"); const sb = document.querySelector(".stab")?.parentElement; if (sb) sb.style.display = (f === "EXCEL") ? "none" : "flex"; render(); }
 function setSort(s, el) { sortBy = s; document.querySelectorAll(".stab").forEach(t => t.classList.remove("active")); el.classList.add("active"); render(); }
 function rsiCls(v) { return v >= 70 ? "hot" : (v <= 30 ? "cold" : ""); }
 function setupScore(p) {
