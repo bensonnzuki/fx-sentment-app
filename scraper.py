@@ -537,8 +537,17 @@ def main():
         base = {"pair": p, "sessions": sess, "session": " • ".join(sess),
                 "rsi_1h": r1.get(p), "rsi_15m": r15.get(p)}
         if not d:
+            od = oanda_data.get(p, {})
+            os_v, ol_v = od.get("oanda_short"), od.get("oanda_long")
+            o_bias = ("BUY" if (os_v or 0) >= 70.0 else "SELL" if (ol_v or 0) >= 70.0 else "OANDA ONLY") if os_v is not None else "NO DATA"
             rows.append({**base, "net_sale": 0.0, "net_sale_vol": 0.0, "net_buy": 0.0, "net_buy_vol": 0.0,
-                         "total_lots": 0.0, "net_lots": 0.0, "bias": "NO DATA"})
+                         "total_lots": 0.0, "net_lots": 0.0, "bias": o_bias,
+                         "oanda_short": os_v, "oanda_long": ol_v,
+                         "stop_pips": od.get("stop_pips"), "stop_side": od.get("stop_side"),
+                         "rvol": od.get("rvol"), "agreed_2of2": False,
+                         "news_warning": " • ".join(dict.fromkeys(
+                             [news_alerts[c] for c in (("USD",) if p in COMMODITIES else (p[:3], p[3:])) if c in news_alerts]
+                         )) or None})
             continue
         tot = round(d["net_sale_vol"] + d["net_buy_vol"], 2)
         net = round(d["net_buy_vol"] - d["net_sale_vol"], 2)
