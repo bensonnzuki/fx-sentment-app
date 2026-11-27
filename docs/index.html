@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>SessionEdge</title>
+<title>SessionEdge + OANDA</title>
 <style>
   body { margin:0; font-family:-apple-system,BlinkMacSystemFont,sans-serif; background:#0f172a; color:#f8fafc; }
   header { position:sticky; top:0; background:#1e293b; padding:12px 14px; border-bottom:1px solid #334155; z-index:10; }
@@ -13,27 +13,23 @@
   .ts { font-size:11px; color:#94a3b8; margin-top:2px; }
   button { background:#3b82f6; color:#fff; border:none; border-radius:6px; padding:7px 12px; font-weight:600; font-size:12px; min-width:82px; }
   .stale { display:none; background:#7f1d1d; color:#fecaca; border:1px solid #ef4444; border-radius:8px; padding:8px 10px; font-size:12px; font-weight:600; margin-top:8px; }
-  .tabs { display:flex; flex-wrap:wrap; gap:5px; margin-top:8px; align-items:center; }
+  .tabs { display:flex; gap:6px; overflow-x:auto; margin-top:9px; align-items:center; }
   .lbl { font-size:11px; color:#64748b; font-weight:700; }
-  .tab { background:#334155; color:#cbd5e1; padding:4px 8px; border-radius:12px; font-size:11px; white-space:nowrap; }
+  .tab { background:#334155; color:#cbd5e1; padding:5px 10px; border-radius:14px; font-size:12px; white-space:nowrap; }
   .tab.active { background:#3b82f6; color:#fff; }
   .tab.oanda { border:1px solid #0284c7; color:#38bdf8; }
   .tab.oanda.active { background:#0284c7; color:#fff; }
-  .stab { background:#0f172a; color:#94a3b8; padding:3px 8px; border-radius:10px; font-size:10px; border:1px solid #334155; white-space:nowrap; }
+  .stab { background:#0f172a; color:#94a3b8; padding:4px 9px; border-radius:10px; font-size:11px; border:1px solid #334155; white-space:nowrap; }
   .stab.active { background:#1d4ed8; color:#fff; border-color:#3b82f6; }
   .list { padding:8px; display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px; }
-  .card { background:#1e293b; border-radius:11px; padding:9px; border:1px solid #334155 !important; box-shadow:none !important; min-width:0; }
+  .card { background:#1e293b; border-radius:11px; padding:9px; border:1px solid #334155; min-width:0; }
   .row1 { display:flex; justify-content:space-between; align-items:center; gap:4px; }
   .pair { font-weight:800; font-size:14px; }
   .sess { display:block; font-size:9px; color:#94a3b8; margin:2px 0 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .badge { padding:2px 5px; border-radius:5px; font-size:9px; font-weight:800; white-space:nowrap; }
-  .BUY, .NET-BUYERS { background:#14532d; color:#4ade80; border:1px solid #22c55e; }
-  .SELL, .NET-SELLERS { background:#7f1d1d; color:#f87171; border:1px solid #ef4444; }
+  .BUY { background:#14532d; color:#4ade80; border:1px solid #22c55e; }
+  .SELL { background:#7f1d1d; color:#f87171; border:1px solid #ef4444; }
   .SPLIT { background:#422006; color:#fbbf24; border:1px solid #d97706; }
-  .NEWS { background:#78350f; color:#fde047; border:1px solid #eab308; }
-  .nwarn { background:#451a03; color:#fde047; border:1px solid #ca8a04; border-radius:5px; padding:3px 5px; font-size:9px; font-weight:700; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .NEWS { background:#78350f; color:#fde047; border:1px solid #eab308; }
-  .nwarn { background:#451a03; color:#fde047; border:1px solid #ca8a04; border-radius:5px; padding:3px 5px; font-size:9px; font-weight:700; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .NONE, .LOW, .NO { background:#334155; color:#94a3b8; }
   .bwrap { margin-bottom:6px; }
   .blbl { display:flex; justify-content:space-between; gap:4px; font-size:9px; color:#94a3b8; margin-bottom:2px; font-weight:600; white-space:nowrap; }
@@ -43,36 +39,23 @@
   .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:5px; font-size:9px; color:#94a3b8; text-align:center; margin-top:6px; padding-top:6px; border-top:1px solid #334155; }
   .val { font-weight:800; font-size:12px; color:#f8fafc; margin-top:1px; }
   .hot { color:#f87171; } .cold { color:#4ade80; } .cyan { color:#38bdf8; }
-  .xl-wrap { grid-column: 1 / -1; overflow-x: auto; background:#1e293b; border:1px solid #334155; border-radius:10px; }
-  .xl-bar { display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:#0f172a; border-bottom:1px solid #334155; }
-  .xl-btn { background:#16a34a; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:11px; font-weight:700; cursor:pointer; }
-  table.xl { width:100%; table-layout:fixed; border-collapse:collapse; font-size:8.5px; line-height:1.15; }
-  table.xl th { background:#1e3a5f; color:#e2e8f0; font-weight:700; padding:5px 2px; border:1px solid #334155; text-align:center; vertical-align:middle; white-space:normal; word-break:break-word; }
-  table.xl td { padding:5px 2px; border:1px solid #334155; text-align:center; vertical-align:middle; color:#f8fafc; white-space:normal; word-break:break-word; }
-  table.xl tr:nth-child(even) td { background:#172033; }
-  table.xl td.left { text-align:center; vertical-align:middle; font-weight:800; }
-  table.xl td.num { text-align:center; vertical-align:middle; font-variant-numeric:tabular-nums; }
 </style>
 </head>
 <body>
 <header>
   <div class="top">
-    <div><h1>SessionEdge</h1><div class="ts" id="ts">Loading...</div></div>
+    <div><h1>SessionEdge <span style="color:#38bdf8;font-size:12px;">+ OANDA</span></h1><div class="ts" id="ts">Loading...</div></div>
     <button id="btn" onclick="load(true)">Refresh</button>
   </div>
   <div class="stale" id="stale"></div>
   <div class="tabs" id="ftabs">
     <div class="tab active" data-f="ALL" onclick="setFilter('ALL',this)">ALL (0)</div>
-    <div class="tab" data-f="ASIA" onclick="setFilter('ASIA',this)">ASIA (0)</div>
+    <div class="tab oanda" data-f="AGREED" onclick="setFilter('AGREED',this)">✓ 2/2 AGREED (0)</div>
+    <div class="tab" data-f="SIGNALS" onclick="setFilter('SIGNALS',this)">SIGNALS (0)</div>
+    <div class="tab" data-f="TIGER" onclick="setFilter('TIGER',this)">TIGER (0)</div>
     <div class="tab" data-f="LONDON" onclick="setFilter('LONDON',this)">LONDON (0)</div>
     <div class="tab" data-f="LONDON-NY" onclick="setFilter('LONDON-NY',this)">LONDON-NY (0)</div>
-    <div class="tab" data-f="NEW YORK" onclick="setFilter('NEW YORK',this)">NEW-YORK (0)</div>
-    <div style="flex-basis:100%;height:0;"></div>
-    <div class="tab" style="border:1px solid #f59e0b;color:#fbbf24;" data-f="COMMODITIES" onclick="setFilter('COMMODITIES',this)">COMMODITIES (0)</div>
-    <div class="tab oanda" data-f="AGREED" onclick="setFilter('AGREED',this)">INSYNC (0)</div>
-    <div class="tab" data-f="SIGNALS" onclick="setFilter('SIGNALS',this)">SIGNALS (0)</div>
-    <div class="tab" style="border:1px solid #eab308;color:#fde047;" data-f="NEWS" onclick="setFilter('NEWS',this)">⚠️ NEWS (0)</div>
-    <div class="tab" style="border:1px solid #22c55e;color:#4ade80;" data-f="EXCEL" onclick="setFilter('EXCEL',this)">REPORT</div>
+    <div class="tab" data-f="NEW YORK" onclick="setFilter('NEW YORK',this)">NEW YORK (0)</div>
   </div>
   <div class="tabs">
     <span class="lbl">SORT:</span>
@@ -85,127 +68,34 @@
 </header>
 <div class="list" id="list"></div>
 <script>
-const DATA_URL = "./latest.json";
+const DATA_URL = "https://bensonnzuki." + "github" + ".io/fx-sentment-app/latest.json";
 let allPairs = [], filter = "ALL", sortBy = "SETUP";
 function setFilter(f, el) { filter = f; document.querySelectorAll(".tab").forEach(t => t.classList.remove("active")); el.classList.add("active"); render(); }
 function setSort(s, el) { sortBy = s; document.querySelectorAll(".stab").forEach(t => t.classList.remove("active")); el.classList.add("active"); render(); }
 function rsiCls(v) { return v >= 70 ? "hot" : (v <= 30 ? "cold" : ""); }
 function setupScore(p) {
-  let sc = (p.bias === "NET-BUYERS" || p.bias === "NET-SELLERS") ? 1000 : (p.bias === "LOW VOL" || p.bias === "NO DATA" ? -500 : 0);
-  if (p.news_warning) sc -= 150;
+  let sc = (p.bias === "BUY" || p.bias === "SELL") ? 1000 : (p.bias === "LOW VOL" || p.bias === "NO DATA" ? -500 : 0);
   if (p.agreed_2of2) sc += 200;
-  else if ((p.bias === "NET-BUYERS" || p.bias === "NET-SELLERS") && p.oanda_long != null) sc -= 80;
+  else if ((p.bias === "BUY" || p.bias === "SELL") && p.oanda_long != null) sc -= 80;
   sc += Math.abs(p.net_sale - p.net_buy);
-  if (p.bias === "NET-BUYERS" && p.rsi_15m && p.rsi_15m <= 35) sc += 40;
-  if (p.bias === "NET-SELLERS" && p.rsi_15m && p.rsi_15m >= 65) sc += 40;
+  if (p.bias === "BUY" && p.rsi_15m && p.rsi_15m <= 35) sc += 40;
+  if (p.bias === "SELL" && p.rsi_15m && p.rsi_15m >= 65) sc += 40;
   return sc;
 }
 function updateCounts() {
-  const c = {
-    ALL: allPairs.length,
-    ASIA: allPairs.filter(p => (p.sessions||[]).includes("ASIA")).length,
-    LONDON: allPairs.filter(p => (p.sessions||[]).includes("LONDON")).length,
-    "LONDON-NY": allPairs.filter(p => (p.sessions||[]).includes("LONDON-NY")).length,
-    "NEW YORK": allPairs.filter(p => (p.sessions||[]).includes("NEW YORK")).length,
-    COMMODITIES: allPairs.filter(p => (p.sessions||[]).includes("COMMODITIES")).length,
-    AGREED: allPairs.filter(p => p.agreed_2of2).length,
-    SIGNALS: allPairs.filter(p => p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS").length,
-    NEWS: allPairs.filter(p => p.news_warning).length
-  };
-  const labels = { AGREED: "INSYNC", "NEW YORK": "NEW-YORK", NEWS: "⚠️ NEWS" };
-  document.querySelectorAll("#ftabs .tab").forEach(t => {
-    const k = t.getAttribute("data-f");
-    t.textContent = k === "EXCEL" ? "REPORT" : (labels[k] || k) + " (" + (c[k] ?? 0) + ")";
-  });
+  const c = { ALL: allPairs.length, AGREED: allPairs.filter(p => p.agreed_2of2).length, SIGNALS: allPairs.filter(p => p.bias==="BUY"||p.bias==="SELL").length, TIGER: allPairs.filter(p => (p.sessions||[]).includes("TIGER")).length, LONDON: allPairs.filter(p => (p.sessions||[]).includes("LONDON")).length, "LONDON-NY": allPairs.filter(p => (p.sessions||[]).includes("LONDON-NY")).length, "NEW YORK": allPairs.filter(p => (p.sessions||[]).includes("NEW YORK")).length };
+  document.querySelectorAll("#ftabs .tab").forEach(t => { const k = t.getAttribute("data-f"); t.textContent = (k==="AGREED"?"✓ 2/2 AGREED":k) + " (" + (c[k]??0) + ")"; });
 }
-function downloadCSV() {
-  const headers = ["PAIR","OVERBOUGHT-TIME (RSI >= 70)","OVERSOLD-TIME (RSI <= 30)","STATUS","MFB S%","OANDA S%","MFB B%","OANDA B%"];
-  const lines = [headers.join(",")];
-  allPairs.filter(p => p.bias==="NET-BUYERS" || p.bias==="NET-SELLERS").forEach(p => {
-    const row = [
-      p.pair,
-      `"${p.ob_time || "-"}"`,
-      `"${p.os_time || "-"}"`,
-      `"${p.price_action || "-"}"`,
-      p.total_lots ? p.net_sale : "",
-      p.oanda_short ?? "",
-      p.total_lots ? p.net_buy : "",
-      p.oanda_long ?? ""
-    ];
-    lines.push(row.join(","));
-  });
-  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "SessionEdge_Report_" + new Date().toISOString().slice(0,10) + ".csv";
-  a.click();
-}
-
 function render() {
   updateCounts();
-  let rows = allPairs.filter(p => filter==="ALL" ? true : ((filter==="SIGNALS" || filter==="EXCEL") ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (filter==="NEWS" ? Boolean(p.news_warning) : (filter==="AGREED" ? p.agreed_2of2 : (filter==="SIGNALS" ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (p.sessions||[]).includes(filter))))));
+  let rows = allPairs.filter(p => filter==="AGREED" ? p.agreed_2of2 : (filter==="SIGNALS" ? (p.bias==="BUY"||p.bias==="SELL") : (filter==="ALL" ? true : (p.sessions||[]).includes(filter))));
   rows.sort((a,b) => sortBy==="SETUP" ? setupScore(b)-setupScore(a) : (sortBy==="LOTS" ? b.total_lots-a.total_lots : (sortBy==="RSI" ? Math.abs((b.rsi_15m??50)-50)-Math.abs((a.rsi_15m??50)-50) : (sortBy==="NET" ? Math.abs(b.net_lots)-Math.abs(a.net_lots) : a.pair.localeCompare(b.pair)))));
-  if (filter === "EXCEL") {
-    const fmtT = s => {
-      if (!s || s === "-") return "-";
-      const clean = s.replace(" EAT", "");
-      const m = clean.match(/^(\d{2}:\d{2})\s+(\([^)]+\))$/);
-      return m ? `${m[1]}<br>${m[2]}` : clean;
-    };
-    const trs = rows.map(p => {
-      const pa = p.price_action || "-";
-      const paCls = pa.includes("reversed") ? "hot" : (pa.includes("continuation") ? "cold" : "");
-      return `<tr>
-        <td class="left">${p.pair}</td>
-        <td class="hot" style="font-weight:700;">${fmtT(p.ob_time)}</td>
-        <td class="cold" style="font-weight:700;">${fmtT(p.os_time)}</td>
-        <td class="${paCls}" style="font-weight:800;">${pa}</td>
-        <td class="num">${p.total_lots ? Math.round(p.net_sale) + "%" : "-"}</td>
-        <td class="num cyan">${p.oanda_short != null ? Math.round(p.oanda_short) + "%" : "-"}</td>
-        <td class="num">${p.total_lots ? Math.round(p.net_buy) + "%" : "-"}</td>
-        <td class="num cyan">${p.oanda_long != null ? Math.round(p.oanda_long) + "%" : "-"}</td>
-      </tr>`;
-    }).join("");
-    document.getElementById("list").innerHTML = `<div class="xl-wrap">
-      <div class="xl-bar">
-        <span style="font-size:11px;color:#94a3b8;font-weight:700;">Report (${rows.length})</span>
-        <button class="xl-btn" onclick="downloadCSV()">⬇ Download (.csv)</button>
-      </div>
-      <table class="xl">
-        <colgroup>
-          <col style="width:13%">
-          <col style="width:16%">
-          <col style="width:16%">
-          <col style="width:19%">
-          <col style="width:9%">
-          <col style="width:9%">
-          <col style="width:9%">
-          <col style="width:9%">
-        </colgroup>
-        <thead><tr>
-          <th>PAIR</th>
-          <th>OVERBOUGHT<br>TIME<br>(RSI &ge; 70)</th>
-          <th>OVERSOLD<br>TIME<br>(RSI &le; 30)</th>
-          <th>STATUS</th>
-          <th>MFB<br>S%</th>
-          <th>OAN<br>S%</th>
-          <th>MFB<br>B%</th>
-          <th>OAN<br>B%</th>
-        </tr></thead>
-        <tbody>${trs}</tbody>
-      </table>
-    </div>`;
-    return;
-  }
-
   document.getElementById("list").innerHTML = rows.map(p => {
-    const isSig = p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS", hasO = p.oanda_short!=null && p.oanda_long!=null;
-    const bLbl = isSig && hasO ? (p.agreed_2of2 ? `${p.bias} 2/2` : `${p.bias} 1/2`) : p.bias;
+    const isSig = p.bias==="BUY"||p.bias==="SELL", hasO = p.oanda_short!=null && p.oanda_long!=null;
+    const bLbl = isSig && hasO ? (p.agreed_2of2 ? `${p.bias} • 2/2` : `${p.bias} • 1/2 SPLIT`) : p.bias;
     const bCls = isSig && hasO && !p.agreed_2of2 ? "SPLIT" : (p.bias||"NONE").split(" ")[0];
-    const cCls = p.news_warning ? "news" : (p.agreed_2of2 ? (p.bias === "NET-BUYERS"?"buy2":"sell2") : (isSig?"sig":""));
-    const nBadge = p.news_warning ? `<span class="badge NEWS">⚠️ NEWS</span> ` : "";
-    const nBanner = p.news_warning ? `<div class="nwarn" title="${p.news_warning}">⚠️ ${p.news_warning}</div>` : "";
-    return `<div class="card"><div class="row1"><span class="pair">${p.pair}</span><div>${nBadge}<span class="badge ${bCls}">${bLbl}</span></div></div><span class="sess">${(p.sessions||[]).join(' • ')}</span>${nBanner}<div class="bwrap"><div class="blbl"><span>MFB ${p.net_sale}% S</span><span>${p.net_buy}% L</span></div><div class="bar"><div class="b-short" style="width:${p.net_sale}%"></div><div class="b-long" style="width:${p.net_buy}%"></div></div></div>${hasO?`<div class="bwrap"><div class="blbl"><span class="cyan">OANDA ${p.oanda_short}% S</span><span class="cyan">${p.oanda_long}% L</span></div><div class="bar"><div class="b-short" style="width:${p.oanda_short}%"></div><div class="b-long" style="width:${p.oanda_long}%"></div></div></div>`:""}<div class="grid"><div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h??'-'}</div></div><div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m??'-'}</div></div><div>Total Lots<div class="val">${Math.round(p.total_lots).toLocaleString()}</div></div><div>Net Lots<div class="val ${p.net_lots>0?'cold':(p.net_lots<0?'hot':'')}">${p.net_lots>0?'+':''}${Math.round(p.net_lots).toLocaleString()}</div></div></div></div>`;
+    const cCls = p.agreed_2of2 ? (p.bias==="BUY"?"buy2":"sell2") : (isSig?"sig":"");
+    return `<div class="card ${cCls}"><div class="row1"><span class="pair">${p.pair}</span><span class="badge ${bCls}">${bLbl}</span></div><span class="sess">${(p.sessions||[]).join(' • ')}</span><div class="bwrap"><div class="blbl"><span>MFB ${p.net_sale}% S</span><span>${p.net_buy}% L</span></div><div class="bar"><div class="b-short" style="width:${p.net_sale}%"></div><div class="b-long" style="width:${p.net_buy}%"></div></div></div>${hasO?`<div class="bwrap"><div class="blbl"><span class="cyan">OANDA ${p.oanda_short}% S</span><span class="cyan">${p.oanda_long}% L</span></div><div class="bar"><div class="b-short" style="width:${p.oanda_short}%"></div><div class="b-long" style="width:${p.oanda_long}%"></div></div></div>`:""}<div class="grid"><div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h??'-'}</div></div><div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m??'-'}</div></div><div>Total Lots<div class="val">${Math.round(p.total_lots).toLocaleString()}</div></div><div>Net Lots<div class="val ${p.net_lots>0?'cold':(p.net_lots<0?'hot':'')}">${p.net_lots>0?'+':''}${Math.round(p.net_lots).toLocaleString()}</div></div></div></div>`;
   }).join("");
 }
 async function load(manual) {
