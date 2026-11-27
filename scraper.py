@@ -64,7 +64,7 @@ SESSIONS_MAP = {
 }
 COMMODITIES = {"XAUUSD", "XAGUSD", "UKOIL", "USOIL"}
 YF_MAP = {"XAUUSD": "GC=F", "XAGUSD": "SI=F", "UKOIL": "BZ=F", "USOIL": "CL=F"}
-OANDA_MAP = {"UKOIL": "(?:BCOUSD|UKOIL)", "USOIL": "(?:WTICOUSD|OILWTI|USOIL)"}
+OANDA_MAP = {"UKOIL": "(?:BCOUSD|UKOIL|OILWTI)", "USOIL": "(?:WTICOUSD|OILWTI|USOIL)"}
 ALL_PAIRS = list(SESSIONS_MAP.keys())
 TARGET_URL = "https://www." + "myfxbook" + ".com/community/outlook"
 JINA_URL = "https://r." + "jina" + ".ai/" + TARGET_URL
