@@ -132,7 +132,7 @@ function downloadCSV() {
     const pct = p.bias === "NET-BUYERS" ? Math.round(p.net_buy || p.oanda_long || 0)
               : (p.bias === "NET-SELLERS" ? Math.round(p.net_sale || p.oanda_short || 0) : null);
     const netOff = pct != null ? `${pct}% ${p.bias}` : (p.bias || "-");
-    const rng = p.atr_pct != null ? `${p.atr_pct}%` : "-";
+    const rng = p.range_used != null ? `${p.range_used}%` : "-";
     const row = [
       p.pair,
       `"${netOff}"`,
@@ -169,7 +169,7 @@ function render() {
       rows.sort((a, b) => {
         if (xlCol === "PAIR") return dir * a.pair.localeCompare(b.pair);
         if (xlCol === "NETOFF") return dir * (netPct(a) - netPct(b));
-        if (xlCol === "RANGE") return dir * ((a.atr_pct ?? -1) - (b.atr_pct ?? -1));
+        if (xlCol === "RANGE") return dir * ((a.range_used ?? -1) - (b.range_used ?? -1));
         if (xlCol === "RSI4") return dir * ((a.rsi_4h ?? -1) - (b.rsi_4h ?? -1));
         if (xlCol === "RSI1") return dir * ((a.rsi_1h ?? -1) - (b.rsi_1h ?? -1));
         if (xlCol === "RSI15") return dir * ((a.rsi_15m ?? -1) - (b.rsi_15m ?? -1));
@@ -183,8 +183,8 @@ function render() {
       const isSell = p.bias === "NET-SELLERS";
       const netOff = pct >= 0 ? `${pct}%<br>${p.bias}` : (p.bias || "-");
       const netCls = isBuy ? "cold" : (isSell ? "hot" : "");
-      const rng = p.atr_pct != null ? `${p.atr_pct}%${p.atr_pct > 80 ? " ⚠️" : ""}` : "-";
-      const rngCls = (p.atr_pct ?? 0) > 80 ? "hot" : "";
+      const rng = p.range_used != null ? `${p.range_used}%${p.range_used > 80 ? " ⚠️" : ""}` : "-";
+      const rngCls = (p.range_used ?? 0) > 80 ? "hot" : "";
       return `<tr>
         <td class="left">${p.pair}</td>
         <td class="${netCls}" style="font-weight:800;">${netOff}</td>
