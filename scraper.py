@@ -211,8 +211,8 @@ def wilder_rsi(close, period=14):
     return round(float(val), 1) if pd.notna(val) else None
 
 
-def fetch_rsi(pairs, period, interval, mins):
-    out = {p: None for p in pairs}
+def fetch_rsi(pairs, period, interval, mins, return_price=False):
+    out = {p: (None, None) if return_price else None for p in pairs}
     try:
         tickers = [YF_MAP.get(p, f"{p}=X") for p in pairs]
         df = yf.download(tickers, period=period, interval=interval, group_by="ticker",
@@ -227,7 +227,9 @@ def fetch_rsi(pairs, period, interval, mins):
                 ls = ls.tz_convert("UTC") if ls.tzinfo else ls.tz_localize("UTC")
                 if ls + timedelta(minutes=mins) > now:
                     c = c.iloc[:-1]   # drop the candle that is still forming
-                out[p] = wilder_rsi(c)
+                r_val = wilder_rsi(c)
+                px_val = float(c.iloc[-1]) if not c.empty else None
+                out[p] = (r_val, px_val) if return_price else r_val
             except Exception:
                 pass
     except Exception as e:
@@ -505,17 +507,77 @@ def fetch_high_impact_news():
             continue
     return {k: v["label"] for k, v in alerts.items()}
 
+
+RSI_STATE_FILE = "/tmp/rsi_extreme_state.json"
+
+def update_rsi_extremes(r15_data, now_eat):
+    """Track when 15M RSI hits >=70 or <=30 and classify subsequent price action."""
+    state = {}
+    if os.path.exists(RSI_STATE_FILE):
+        try:
+            with open(RSI_STATE_FILE, "r") as fh:
+                state = json.load(fh)
+        except Exception:
+            pass
+
+    results = {}
+    t_str = now_eat.strftime("%H:%M EAT")
+    for p, (rsi, px) in r15_data.items():
+        st = state.get(p, {})
+        dec = 2 if ("JPY" in p or p in {"XAUUSD", "UKOIL", "USOIL"}) else 4
+        fmt_px = lambda v: f"{v:.{dec}f}" if v is not None else ""
+
+        if rsi is not None and px is not None:
+            if rsi >= 70:
+                if st.get("side") != "OB":
+                    st = {"side": "OB", "time": t_str, "trigger_px": px, "extreme_px": px}
+                else:
+                    st["extreme_px"] = max(st.get("extreme_px", px), px)
+            elif rsi <= 30:
+                if st.get("side") != "OS":
+                    st = {"side": "OS", "time": t_str, "trigger_px": px, "extreme_px": px}
+                else:
+                    st["extreme_px"] = min(st.get("extreme_px", px), px)
+            elif 42 <= rsi <= 58:
+                st = {}
+
+        ob_time, os_time, pa = "-", "-", "-"
+        if st.get("side") == "OB" and px is not None:
+            ob_time = f"{st['time']} ({fmt_px(st['trigger_px'])})"
+            if px >= st["trigger_px"]:
+                pa = f"Buy continued to {fmt_px(px)}"
+            else:
+                pa = "Buy reversed"
+        elif st.get("side") == "OS" and px is not None:
+            os_time = f"{st['time']} ({fmt_px(st['trigger_px'])})"
+            if px <= st["trigger_px"]:
+                pa = f"Sell continued to {fmt_px(px)}"
+            else:
+                pa = "Sell reversed"
+
+        state[p] = st
+        results[p] = {"ob_time": ob_time, "os_time": os_time, "price_action": pa}
+
+    try:
+        with open(RSI_STATE_FILE, "w") as fh:
+            json.dump(state, fh, indent=2)
+    except Exception:
+        pass
+    return results
+
 def main():
     sent, meta = fetch_sentiment(ALL_PAIRS)
     if not sent:
         raise RuntimeError("0 pairs matched from all sources")
     r1 = fetch_rsi(ALL_PAIRS, "10d", "1h", 60)
-    r15 = fetch_rsi(ALL_PAIRS, "5d", "15m", 15)
+    r15_raw = fetch_rsi(ALL_PAIRS, "5d", "15m", 15, return_price=True)
+    r15 = {p: val for p, val in r15_raw.items()}
     oanda_data = fetch_oanda_all(ALL_PAIRS)
     news_alerts = fetch_high_impact_news()
     now = datetime.now(TZ)
     now_naive = now.replace(tzinfo=None, second=0, microsecond=0)
     stamp = now.strftime("%Y-%m-%d %H:%M EAT")
+    rsi_ext = update_rsi_extremes(r15_raw, now)
 
     prev = {}
     if os.path.exists(JSON_PATH):
@@ -534,8 +596,12 @@ def main():
     for p in ALL_PAIRS:
         d = sent.get(p)
         sess = SESSIONS_MAP[p]
+        ext = rsi_ext.get(p, {})
         base = {"pair": p, "sessions": sess, "session": " • ".join(sess),
-                "rsi_1h": r1.get(p), "rsi_15m": r15.get(p)}
+                "rsi_1h": r1.get(p), "rsi_15m": r15.get(p),
+                "ob_time": ext.get("ob_time", "-"),
+                "os_time": ext.get("os_time", "-"),
+                "price_action": ext.get("price_action", "-")}
         if not d:
             od = oanda_data.get(p, {})
             os_v, ol_v = od.get("oanda_short"), od.get("oanda_long")
