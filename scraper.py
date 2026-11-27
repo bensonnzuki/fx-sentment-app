@@ -561,14 +561,19 @@ def append_oanda_to_excel(rows, changed):
 
             # Style L1, M1, N1 (cols 12, 13, 14) flush next to K1 (BIAS)
             headers = ["OANDA SHORT %", "OANDA LONG %", "2/2 AGREED"]
-            col_widths = [11.5, 11.5, 11.0] [15, 15, 13]
+            col_widths = [11.5, 11.5, 11.0]
             for idx in range(3):
                 col = 12 + idx
                 cell = ws.cell(1, col, headers[idx])
                 clone_style(ws.cell(1, 11), cell)
                 ws.column_dimensions[openpyxl.utils.get_column_letter(col)].width = col_widths[idx]
 
+            if name == "History" and not changed:
+                continue
+
             for r_idx in range(2, ws.max_row + 1):
+                if name == "History" and r_idx <= ws.max_row - len(rows):
+                    continue
                 pair_val = ""
                 for c_idx in range(1, 4):
                     cand = str(ws.cell(r_idx, c_idx).value or "").strip().upper()
@@ -576,8 +581,6 @@ def append_oanda_to_excel(rows, changed):
                         pair_val = cand
                         break
                 if not pair_val:
-                    continue
-                if name == "History" and r_idx < ws.max_row - len(rows):
                     continue
 
                 d = by_pair[pair_val]
