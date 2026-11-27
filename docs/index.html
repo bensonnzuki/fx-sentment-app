@@ -85,14 +85,13 @@
 </header>
 <div class="list" id="list"></div>
 <script>
-const DATA_URL = "https://bensonnzuki." + "github" + ".io/fx-sentment-app/latest.json";
+const DATA_URL = "./latest.json";
 let allPairs = [], filter = "ALL", sortBy = "SETUP";
 function setFilter(f, el) { filter = f; document.querySelectorAll(".tab").forEach(t => t.classList.remove("active")); el.classList.add("active"); render(); }
 function setSort(s, el) { sortBy = s; document.querySelectorAll(".stab").forEach(t => t.classList.remove("active")); el.classList.add("active"); render(); }
 function rsiCls(v) { return v >= 70 ? "hot" : (v <= 30 ? "cold" : ""); }
 function setupScore(p) {
   let sc = (p.bias === "NET-BUYERS" || p.bias === "NET-SELLERS") ? 1000 : (p.bias === "LOW VOL" || p.bias === "NO DATA" ? -500 : 0);
-  if (p.news_warning) sc -= 150;
   if (p.news_warning) sc -= 150;
   if (p.agreed_2of2) sc += 200;
   else if ((p.bias === "NET-BUYERS" || p.bias === "NET-SELLERS") && p.oanda_long != null) sc -= 80;
