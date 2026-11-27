@@ -511,7 +511,7 @@ def fetch_high_impact_news():
 RSI_STATE_FILE = "/tmp/rsi_extreme_state.json"
 
 def update_rsi_extremes(r15_data, now_eat):
-    """Track when 15M RSI hits >=70 or <=30 and classify subsequent price action."""
+    """Track when 15M RSI hits >=70 or <=30 and classify pip continuation vs reversal."""
     state = {}
     if os.path.exists(RSI_STATE_FILE):
         try:
@@ -525,6 +525,7 @@ def update_rsi_extremes(r15_data, now_eat):
     for p, (rsi, px) in r15_data.items():
         st = state.get(p, {})
         dec = 2 if ("JPY" in p or p in {"XAUUSD", "UKOIL", "USOIL"}) else 4
+        pip_sz = 0.01 if ("JPY" in p or p in {"XAUUSD", "UKOIL", "USOIL"}) else 0.0001
         fmt_px = lambda v: f"{v:.{dec}f}" if v is not None else ""
 
         if rsi is not None and px is not None:
@@ -543,17 +544,31 @@ def update_rsi_extremes(r15_data, now_eat):
 
         ob_time, os_time, pa = "-", "-", "-"
         if st.get("side") == "OB" and px is not None:
-            ob_time = f"{st['time']} ({fmt_px(st['trigger_px'])})"
-            if px >= st["trigger_px"]:
-                pa = "Buy in continuation"
+            trig = st["trigger_px"]
+            ext = max(st.get("extreme_px", trig), px)
+            st["extreme_px"] = ext
+            ob_time = f"{st['time']} ({fmt_px(trig)})"
+            cur_pips = round((px - trig) / pip_sz)
+            max_pips = round((ext - trig) / pip_sz)
+            if px >= trig:
+                pa = f"Buy {max(cur_pips, 0)} pips in continuation"
+            elif max_pips >= 5:
+                pa = f"Buy continued for {max_pips} pips and reversed"
             else:
-                pa = "Buy reversed"
+                pa = "Buy immediately reversed"
         elif st.get("side") == "OS" and px is not None:
-            os_time = f"{st['time']} ({fmt_px(st['trigger_px'])})"
-            if px <= st["trigger_px"]:
-                pa = "Sell in continuation"
+            trig = st["trigger_px"]
+            ext = min(st.get("extreme_px", trig), px)
+            st["extreme_px"] = ext
+            os_time = f"{st['time']} ({fmt_px(trig)})"
+            cur_pips = round((trig - px) / pip_sz)
+            max_pips = round((trig - ext) / pip_sz)
+            if px <= trig:
+                pa = f"Sell {max(cur_pips, 0)} pips in continuation"
+            elif max_pips >= 5:
+                pa = f"Sell continued for {max_pips} pips and reversed"
             else:
-                pa = "Sell reversed"
+                pa = "Sell immediately reversed"
 
         state[p] = st
         results[p] = {"ob_time": ob_time, "os_time": os_time, "price_action": pa}
