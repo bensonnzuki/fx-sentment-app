@@ -60,14 +60,15 @@
   <div class="stale" id="stale"></div>
   <div class="tabs" id="ftabs">
     <div class="tab active" data-f="ALL" onclick="setFilter('ALL',this)">ALL (0)</div>
-    <div class="tab oanda" data-f="AGREED" onclick="setFilter('AGREED',this)">MFB-OANDA-MATCH (0)</div>
-    <div class="tab" data-f="SIGNALS" onclick="setFilter('SIGNALS',this)">SIGNALS (0)</div>
-    <div class="tab" style="border:1px solid #eab308;color:#fde047;" data-f="NEWS" onclick="setFilter('NEWS',this)">⚠️ NEWS (0)</div>
-    <div class="tab" data-f="TIGER" onclick="setFilter('TIGER',this)">TIGER (0)</div>
+    <div class="tab" data-f="ASIA" onclick="setFilter('ASIA',this)">ASIA (0)</div>
     <div class="tab" data-f="LONDON" onclick="setFilter('LONDON',this)">LONDON (0)</div>
     <div class="tab" data-f="LONDON-NY" onclick="setFilter('LONDON-NY',this)">LONDON-NY (0)</div>
-    <div class="tab" data-f="NEW YORK" onclick="setFilter('NEW YORK',this)">NEW YORK (0)</div>
+    <div class="tab" data-f="NEW YORK" onclick="setFilter('NEW YORK',this)">NEW-YORK (0)</div>
+    <div style="flex-basis:100%;height:0;"></div>
     <div class="tab" style="border:1px solid #f59e0b;color:#fbbf24;" data-f="COMMODITIES" onclick="setFilter('COMMODITIES',this)">COMMODITIES (0)</div>
+    <div class="tab oanda" data-f="AGREED" onclick="setFilter('AGREED',this)">INSYNC (0)</div>
+    <div class="tab" data-f="SIGNALS" onclick="setFilter('SIGNALS',this)">SIGNALS (0)</div>
+    <div class="tab" style="border:1px solid #eab308;color:#fde047;" data-f="NEWS" onclick="setFilter('NEWS',this)">⚠️ NEWS (0)</div>
   </div>
   <div class="tabs">
     <span class="lbl">SORT:</span>
@@ -99,19 +100,19 @@ function setupScore(p) {
 function updateCounts() {
   const c = {
     ALL: allPairs.length,
-    AGREED: allPairs.filter(p => p.agreed_2of2).length,
-    NEWS: allPairs.filter(p => p.news_warning).length,
-    SIGNALS: allPairs.filter(p => p.bias==="BUY"||p.bias==="SELL").length,
-    TIGER: allPairs.filter(p => (p.sessions||[]).includes("TIGER")).length,
+    ASIA: allPairs.filter(p => (p.sessions||[]).includes("ASIA")).length,
     LONDON: allPairs.filter(p => (p.sessions||[]).includes("LONDON")).length,
     "LONDON-NY": allPairs.filter(p => (p.sessions||[]).includes("LONDON-NY")).length,
     "NEW YORK": allPairs.filter(p => (p.sessions||[]).includes("NEW YORK")).length,
-    COMMODITIES: allPairs.filter(p => (p.sessions||[]).includes("COMMODITIES")).length
+    COMMODITIES: allPairs.filter(p => (p.sessions||[]).includes("COMMODITIES")).length,
+    AGREED: allPairs.filter(p => p.agreed_2of2).length,
+    SIGNALS: allPairs.filter(p => p.bias==="BUY"||p.bias==="SELL").length,
+    NEWS: allPairs.filter(p => p.news_warning).length
   };
+  const labels = { AGREED: "INSYNC", "NEW YORK": "NEW-YORK", NEWS: "⚠️ NEWS" };
   document.querySelectorAll("#ftabs .tab").forEach(t => {
     const k = t.getAttribute("data-f");
-    const lbl = k === "AGREED" ? "MFB-OANDA-MATCH" : (k === "NEWS" ? "⚠️ NEWS" : k);
-    t.textContent = lbl + " (" + (c[k] ?? 0) + ")";
+    t.textContent = (labels[k] || k) + " (" + (c[k] ?? 0) + ")";
   });
 }
 function render() {
