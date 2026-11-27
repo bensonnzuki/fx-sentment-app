@@ -435,6 +435,64 @@ def fetch_oanda_all(pairs):
     print("Public OANDA fetched instruments:", len(out))
     return out
 
+
+NEWS_CACHE_FILE = "/tmp/ff_calendar_cache.json"
+NEWS_FEED_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
+
+def fetch_high_impact_news():
+    """Fetch weekly FF calendar (cached 6h to respect rate limits) and return active red-folder alerts by currency."""
+    events = []
+    use_cache = False
+    if os.path.exists(NEWS_CACHE_FILE):
+        age = time.time() - os.path.getmtime(NEWS_CACHE_FILE)
+        if age < 6 * 3600:
+            try:
+                with open(NEWS_CACHE_FILE, "r") as fh:
+                    events = json.load(fh)
+                use_cache = True
+            except Exception:
+                pass
+    if not use_cache:
+        try:
+            res = requests.get(NEWS_FEED_URL, impersonate="chrome", timeout=15)
+            if res.status_code == 200 and res.text.strip().startswith("["):
+                events = res.json()
+                with open(NEWS_CACHE_FILE, "w") as fh:
+                    json.dump(events, fh)
+            elif os.path.exists(NEWS_CACHE_FILE):
+                with open(NEWS_CACHE_FILE, "r") as fh:
+                    events = json.load(fh)
+        except Exception as e:
+            print("News feed fetch warning:", e)
+            if os.path.exists(NEWS_CACHE_FILE):
+                try:
+                    with open(NEWS_CACHE_FILE, "r") as fh:
+                        events = json.load(fh)
+                except Exception:
+                    pass
+
+    now_utc = datetime.now(timezone.utc)
+    alerts = {}
+    for ev in events:
+        if str(ev.get("impact", "")).lower() != "high":
+            continue
+        ccy = str(ev.get("country", "")).strip().upper()
+        dt_str = ev.get("date", "")
+        if not ccy or not dt_str:
+            continue
+        try:
+            ev_dt = datetime.fromisoformat(dt_str).astimezone(timezone.utc)
+            mins_to = (ev_dt - now_utc).total_seconds() / 60.0
+            # Flag window: 15 min after release to 60 min before release
+            if -15 <= mins_to <= 60:
+                eat_time = ev_dt.astimezone(TZ).strftime("%H:%M")
+                label = f"{ccy} {ev.get("title", "News")} ({eat_time} EAT)"
+                if ccy not in alerts or abs(mins_to) < alerts[ccy]["abs_m"]:
+                    alerts[ccy] = {"label": label, "mins": round(mins_to), "abs_m": abs(mins_to)}
+        except Exception:
+            continue
+    return {k: v["label"] for k, v in alerts.items()}
+
 def main():
     sent, meta = fetch_sentiment(ALL_PAIRS)
     if not sent:
@@ -442,6 +500,7 @@ def main():
     r1 = fetch_rsi(ALL_PAIRS, "10d", "1h", 60)
     r15 = fetch_rsi(ALL_PAIRS, "5d", "15m", 15)
     oanda_data = fetch_oanda_all(ALL_PAIRS)
+    news_alerts = fetch_high_impact_news()
     now = datetime.now(TZ)
     now_naive = now.replace(tzinfo=None, second=0, microsecond=0)
     stamp = now.strftime("%Y-%m-%d %H:%M EAT")
@@ -484,7 +543,10 @@ def main():
             "agreed_2of2": (
                 (bias == "BUY" and (oanda_data.get(p, {}).get("oanda_short") or 0) >= 70.0) or
                 (bias == "SELL" and (oanda_data.get(p, {}).get("oanda_long") or 0) >= 70.0)
-            )})
+            ),
+            "news_warning": " • ".join(dict.fromkeys(
+                [news_alerts[c] for c in (p[:3], p[3:]) if c in news_alerts]
+            )) or None})
 
     sig = lambda rs: [(x["pair"], x["net_sale"], x["total_lots"], x["rsi_1h"], x["rsi_15m"], x["bias"]) for x in rs]
     any_changed = sig(rows) != sig(prev.get("pairs", []))
