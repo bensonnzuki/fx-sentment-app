@@ -121,7 +121,7 @@ function updateCounts() {
 function downloadCSV() {
   const headers = ["PAIR","OVERBOUGHT-TIME (RSI >= 70)","OVERSOLD-TIME (RSI <= 30)","STATUS","MFB S%","OANDA S%","MFB B%","OANDA B%"];
   const lines = [headers.join(",")];
-  allPairs.forEach(p => {
+  allPairs.filter(p => p.bias==="NET-BUYERS" || p.bias==="NET-SELLERS").forEach(p => {
     const row = [
       p.pair,
       `"${p.ob_time || "-"}"`,
@@ -143,7 +143,7 @@ function downloadCSV() {
 
 function render() {
   updateCounts();
-  let rows = allPairs.filter(p => (filter==="ALL" || filter==="EXCEL") ? true : (filter==="NEWS" ? Boolean(p.news_warning) : (filter==="AGREED" ? p.agreed_2of2 : (filter==="SIGNALS" ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (p.sessions||[]).includes(filter)))));
+  let rows = allPairs.filter(p => filter==="ALL" ? true : ((filter==="SIGNALS" || filter==="EXCEL") ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (filter==="NEWS" ? Boolean(p.news_warning) : (filter==="AGREED" ? p.agreed_2of2 : (filter==="SIGNALS" ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (p.sessions||[]).includes(filter))))));
   rows.sort((a,b) => sortBy==="SETUP" ? setupScore(b)-setupScore(a) : (sortBy==="LOTS" ? b.total_lots-a.total_lots : (sortBy==="RSI" ? Math.abs((b.rsi_15m??50)-50)-Math.abs((a.rsi_15m??50)-50) : (sortBy==="NET" ? Math.abs(b.net_lots)-Math.abs(a.net_lots) : a.pair.localeCompare(b.pair)))));
   if (filter === "EXCEL") {
     const fmtT = s => {
