@@ -64,7 +64,7 @@ SESSIONS_MAP = {
 }
 COMMODITIES = {"XAUUSD", "XAGUSD", "UKOIL", "USOIL"}
 YF_MAP = {"XAUUSD": "GC=F", "XAGUSD": "SI=F", "UKOIL": "BZ=F", "USOIL": "CL=F"}
-OANDA_MAP = {"UKOIL": "BCOUSD", "USOIL": "OILWTI"}
+OANDA_MAP = {"UKOIL": "(?:BCOUSD|UKOIL)", "USOIL": "(?:WTICOUSD|OILWTI|USOIL)"}
 ALL_PAIRS = list(SESSIONS_MAP.keys())
 TARGET_URL = "https://www." + "myfxbook" + ".com/community/outlook"
 JINA_URL = "https://r." + "jina" + ".ai/" + TARGET_URL
@@ -85,8 +85,11 @@ def parse_outlook(raw, pairs, out, rejected):
     text = re.sub(r"\s+", " ", text)
 
     tokens = []
+    MFB_ALIASES = {"XBRUSD": "UKOIL", "XTIUSD": "USOIL", "GOLD": "XAUUSD", "SILVER": "XAGUSD"}
     for p in sorted(pairs, key=len, reverse=True):
         tokens += [p, f"{p[:3]}/{p[3:]}"]
+    for alias in MFB_ALIASES:
+        tokens += [alias, f"{alias[:3]}/{alias[3:]}"]
     names = "|".join(re.escape(t) for t in tokens)
     gap = rf"(?:(?!\b(?:{names})\b).)"          # may not run across another pair
     num = r"(\d+(?:\.\d+)?)\s*%\s+([\d,]+(?:\.\d+)?)\s+(?i:lots)"
@@ -108,6 +111,7 @@ def parse_outlook(raw, pairs, out, rejected):
     def record(pair_raw, sp, sv, lp, lv):
         nonlocal added
         pair = pair_raw.replace("/", "").upper()
+        pair = MFB_ALIASES.get(pair, pair)
         if pair in out or pair not in pairs:
             return
         if not _valid(sp, sv, lp, lv):
