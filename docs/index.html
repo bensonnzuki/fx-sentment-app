@@ -53,7 +53,7 @@
   .xl-bar { display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:#0f172a; border-bottom:1px solid #334155; }
   .xl-btn { background:#16a34a; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:11px; font-weight:700; cursor:pointer; }
   table.xl { width:100%; table-layout:fixed; border-collapse:collapse; font-size:8.5px; line-height:1.15; }
-  table.xl th { background:#1e3a5f; color:#e2e8f0; font-weight:700; padding:5px 2px; border:1px solid #334155; text-align:center; vertical-align:middle; white-space:normal; word-break:break-word; }
+  table.xl th { background:#1e3a5f; color:#e2e8f0; font-weight:700; padding:5px 2px; border:1px solid #334155; text-align:center; vertical-align:middle; white-space:normal; word-break:break-word; cursor:pointer; user-select:none; }
   table.xl td { padding:5px 2px; border:1px solid #334155; text-align:center; vertical-align:middle; color:#f8fafc; white-space:normal; word-break:break-word; }
   table.xl tr:nth-child(even) td { background:#172033; }
   table.xl td.left { text-align:center; vertical-align:middle; font-weight:800; }
@@ -126,18 +126,21 @@ function updateCounts() {
   });
 }
 function downloadCSV() {
-  const headers = ["PAIR","OVERBOUGHT-TIME (RSI >= 70)","OVERSOLD-TIME (RSI <= 30)","STATUS","MFB S%","OANDA S%","MFB B%","OANDA B%"];
+  const headers = ["PAIR","NET-OFF","RANGE","4HR RSI","1HR RSI","15MIN RSI","CONCLUSION"];
   const lines = [headers.join(",")];
-  allPairs.filter(p => p.bias==="NET-BUYERS" || p.bias==="NET-SELLERS").forEach(p => {
+  allPairs.forEach(p => {
+    const pct = p.bias === "NET-BUYERS" ? Math.round(p.net_buy || p.oanda_long || 0)
+              : (p.bias === "NET-SELLERS" ? Math.round(p.net_sale || p.oanda_short || 0) : null);
+    const netOff = pct != null ? `${pct}% ${p.bias}` : (p.bias || "-");
+    const rng = p.atr_pct != null ? `${p.atr_pct}%` : "-";
     const row = [
       p.pair,
-      `"${p.ob_time || "-"}"`,
-      `"${p.os_time || "-"}"`,
-      `"${p.price_action || "-"}"`,
-      p.total_lots ? p.net_sale : "",
-      p.oanda_short ?? "",
-      p.total_lots ? p.net_buy : "",
-      p.oanda_long ?? ""
+      `"${netOff}"`,
+      `"${rng}"`,
+      p.rsi_4h ?? "",
+      p.rsi_1h ?? "",
+      p.rsi_15m ?? "",
+      ""
     ];
     lines.push(row.join(","));
   });
@@ -147,57 +150,74 @@ function downloadCSV() {
   a.download = "SessionEdge_Report_" + new Date().toISOString().slice(0,10) + ".csv";
   a.click();
 }
+let xlCol = null, xlAsc = true;
+function sortXL(col) {
+  if (xlCol === col) xlAsc = !xlAsc;
+  else { xlCol = col; xlAsc = (col === "PAIR"); }
+  render();
+}
 
 function render() {
   updateCounts();
-  let rows = allPairs.filter(p => filter==="ALL" ? true : ((filter==="SIGNALS" || filter==="EXCEL") ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (filter==="NEWS" ? Boolean(p.news_warning) : (filter==="AGREED" ? p.agreed_2of2 : (filter==="SIGNALS" ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (p.sessions||[]).includes(filter))))));
+  let rows = allPairs.filter(p => (filter==="ALL" || filter==="EXCEL") ? true : (filter==="NEWS" ? Boolean(p.news_warning) : (filter==="AGREED" ? p.agreed_2of2 : (filter==="SIGNALS" ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (p.sessions||[]).includes(filter)))));
   rows.sort((a,b) => sortBy==="SETUP" ? setupScore(b)-setupScore(a) : (sortBy==="LOTS" ? b.total_lots-a.total_lots : (sortBy==="RSI" ? Math.abs((b.rsi_15m??50)-50)-Math.abs((a.rsi_15m??50)-50) : (sortBy==="NET" ? Math.abs(b.net_lots)-Math.abs(a.net_lots) : a.pair.localeCompare(b.pair)))));
   if (filter === "EXCEL") {
-    const fmtT = s => {
-      if (!s || s === "-") return "-";
-      const clean = s.replace(" EAT", "");
-      const m = clean.match(/^(\d{2}:\d{2})\s+(\([^)]+\))$/);
-      return m ? `${m[1]}<br>${m[2]}` : clean;
-    };
+    const netPct = p => p.bias === "NET-BUYERS" ? Math.round(p.net_buy || p.oanda_long || 0)
+                      : (p.bias === "NET-SELLERS" ? Math.round(p.net_sale || p.oanda_short || 0) : -1);
+    if (xlCol) {
+      const dir = xlAsc ? 1 : -1;
+      rows.sort((a, b) => {
+        if (xlCol === "PAIR") return dir * a.pair.localeCompare(b.pair);
+        if (xlCol === "NETOFF") return dir * (netPct(a) - netPct(b));
+        if (xlCol === "RANGE") return dir * ((a.atr_pct ?? -1) - (b.atr_pct ?? -1));
+        if (xlCol === "RSI4") return dir * ((a.rsi_4h ?? -1) - (b.rsi_4h ?? -1));
+        if (xlCol === "RSI1") return dir * ((a.rsi_1h ?? -1) - (b.rsi_1h ?? -1));
+        if (xlCol === "RSI15") return dir * ((a.rsi_15m ?? -1) - (b.rsi_15m ?? -1));
+        return 0;
+      });
+    }
+    const arr = col => xlCol === col ? (xlAsc ? " ▲" : " ▼") : "";
     const trs = rows.map(p => {
-      const pa = p.price_action || "-";
-      const paCls = pa.includes("reversed") ? "hot" : (pa.includes("continuation") ? "cold" : "");
+      const pct = netPct(p);
+      const isBuy = p.bias === "NET-BUYERS";
+      const isSell = p.bias === "NET-SELLERS";
+      const netOff = pct >= 0 ? `${pct}%<br>${p.bias}` : (p.bias || "-");
+      const netCls = isBuy ? "cold" : (isSell ? "hot" : "");
+      const rng = p.atr_pct != null ? `${p.atr_pct}%${p.atr_pct > 80 ? " ⚠️" : ""}` : "-";
+      const rngCls = (p.atr_pct ?? 0) > 80 ? "hot" : "";
       return `<tr>
         <td class="left">${p.pair}</td>
-        <td class="hot" style="font-weight:700;">${fmtT(p.ob_time)}</td>
-        <td class="cold" style="font-weight:700;">${fmtT(p.os_time)}</td>
-        <td class="${paCls}" style="font-weight:800;">${pa}</td>
-        <td class="num">${p.total_lots ? Math.round(p.net_sale) + "%" : "-"}</td>
-        <td class="num cyan">${p.oanda_short != null ? Math.round(p.oanda_short) + "%" : "-"}</td>
-        <td class="num">${p.total_lots ? Math.round(p.net_buy) + "%" : "-"}</td>
-        <td class="num cyan">${p.oanda_long != null ? Math.round(p.oanda_long) + "%" : "-"}</td>
+        <td class="${netCls}" style="font-weight:800;">${netOff}</td>
+        <td class="num ${rngCls}" style="font-weight:700;">${rng}</td>
+        <td class="num ${rsiCls(p.rsi_4h)}" style="font-weight:700;">${p.rsi_4h ?? "-"}</td>
+        <td class="num ${rsiCls(p.rsi_1h)}" style="font-weight:700;">${p.rsi_1h ?? "-"}</td>
+        <td class="num ${rsiCls(p.rsi_15m)}" style="font-weight:700;">${p.rsi_15m ?? "-"}</td>
+        <td></td>
       </tr>`;
     }).join("");
     document.getElementById("list").innerHTML = `<div class="xl-wrap">
       <div class="xl-bar">
-        <span style="font-size:11px;color:#94a3b8;font-weight:700;">Report (${rows.length})</span>
+        <span style="font-size:11px;color:#94a3b8;font-weight:700;">Report (${rows.length} pairs • tap header to sort)</span>
         <button class="xl-btn" onclick="downloadCSV()">⬇ Download (.csv)</button>
       </div>
       <table class="xl">
         <colgroup>
-          <col style="width:13%">
-          <col style="width:16%">
-          <col style="width:16%">
-          <col style="width:19%">
-          <col style="width:9%">
-          <col style="width:9%">
-          <col style="width:9%">
-          <col style="width:9%">
+          <col style="width:14%">
+          <col style="width:20%">
+          <col style="width:12%">
+          <col style="width:12%">
+          <col style="width:12%">
+          <col style="width:12%">
+          <col style="width:18%">
         </colgroup>
         <thead><tr>
-          <th>PAIR</th>
-          <th>OVERBOUGHT<br>TIME<br>(RSI &ge; 70)</th>
-          <th>OVERSOLD<br>TIME<br>(RSI &le; 30)</th>
-          <th>STATUS</th>
-          <th>MFB<br>S%</th>
-          <th>OAN<br>S%</th>
-          <th>MFB<br>B%</th>
-          <th>OAN<br>B%</th>
+          <th onclick="sortXL('PAIR')">PAIR${arr('PAIR')}</th>
+          <th onclick="sortXL('NETOFF')">NET-OFF${arr('NETOFF')}</th>
+          <th onclick="sortXL('RANGE')">RANGE${arr('RANGE')}</th>
+          <th onclick="sortXL('RSI4')">4HR<br>RSI${arr('RSI4')}</th>
+          <th onclick="sortXL('RSI1')">1HR<br>RSI${arr('RSI1')}</th>
+          <th onclick="sortXL('RSI15')">15MIN<br>RSI${arr('RSI15')}</th>
+          <th>CONCLUSION</th>
         </tr></thead>
         <tbody>${trs}</tbody>
       </table>
