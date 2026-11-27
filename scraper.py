@@ -211,8 +211,8 @@ def wilder_rsi(close, period=14):
     return round(float(val), 1) if pd.notna(val) else None
 
 
-def fetch_rsi(pairs, period, interval, mins, return_price=False):
-    out = {p: (None, None) if return_price else None for p in pairs}
+def fetch_rsi(pairs, period, interval, mins, return_price=False, return_4h=False):
+    out = {p: (None, None) if (return_price or return_4h) else None for p in pairs}
     try:
         tickers = [YF_MAP.get(p, f"{p}=X") for p in pairs]
         df = yf.download(tickers, period=period, interval=interval, group_by="ticker",
@@ -223,17 +223,58 @@ def fetch_rsi(pairs, period, interval, mins, return_price=False):
                 c = df[t]["Close"].dropna()
                 if c.empty:
                     continue
-                ls = c.index[-1]
-                ls = ls.tz_convert("UTC") if ls.tzinfo else ls.tz_localize("UTC")
-                if ls + timedelta(minutes=mins) > now:
+                idx = c.index.tz_convert("UTC") if c.index.tzinfo else c.index.tz_localize("UTC")
+                c.index = idx
+                if c.index[-1] + timedelta(minutes=mins) > now:
                     c = c.iloc[:-1]   # drop the candle that is still forming
                 r_val = wilder_rsi(c)
-                px_val = float(c.iloc[-1]) if not c.empty else None
-                out[p] = (r_val, px_val) if return_price else r_val
+                if return_4h:
+                    c4 = c.resample("4h").last().dropna()
+                    if not c4.empty and c4.index[-1] + timedelta(hours=4) > now:
+                        c4 = c4.iloc[:-1]
+                    out[p] = (r_val, wilder_rsi(c4))
+                elif return_price:
+                    px_val = float(c.iloc[-1]) if not c.empty else None
+                    out[p] = (r_val, px_val)
+                else:
+                    out[p] = r_val
             except Exception:
                 pass
     except Exception as e:
         print(f"RSI ({interval}) fetch warning:", e)
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Daily range used: how much of its normal daily move (ATR14) a pair has already made today
+# ---------------------------------------------------------------------------
+def fetch_range_used(pairs):
+    out = {}
+    try:
+        tickers = [YF_MAP.get(p, f"{p}=X") for p in pairs]
+        df = yf.download(tickers, period="3mo", interval="1d", group_by="ticker",
+                         progress=False, threads=True, auto_adjust=False)
+        for p, t in zip(pairs, tickers):
+            try:
+                d = df[t][["High", "Low", "Close"]].dropna()
+                if len(d) < 16:
+                    continue
+                today, past = d.iloc[-1], d.iloc[:-1]           # last row = today's candle so far
+                prev_close = past["Close"].shift(1)
+                tr = pd.concat([past["High"] - past["Low"],
+                                (past["High"] - prev_close).abs(),
+                                (past["Low"] - prev_close).abs()], axis=1).max(axis=1)
+                atr = tr.ewm(alpha=1 / 14, min_periods=14, adjust=False).mean().iloc[-1]   # Wilder ATR14 of completed days
+                if not atr or pd.isna(atr):
+                    continue
+                pip = 0.01 if p.endswith("JPY") else (1.0 if p in COMMODITIES else 0.0001)
+                out[p] = {"range_used": int(round((today["High"] - today["Low"]) / atr * 100)),
+                          "atr_pips": round(float(atr) / pip, 1)}
+            except Exception:
+                pass
+    except Exception as e:
+        print("Daily range fetch warning:", e)
+    print("Daily range used computed for:", len(out))
     return out
 
 
@@ -584,9 +625,12 @@ def main():
     sent, meta = fetch_sentiment(ALL_PAIRS)
     if not sent:
         raise RuntimeError("0 pairs matched from all sources")
-    r1 = fetch_rsi(ALL_PAIRS, "10d", "1h", 60)
+    r1_raw = fetch_rsi(ALL_PAIRS, "30d", "1h", 60, return_4h=True)
+    r1 = {p: v for p, v in r1_raw.items()}
+    r4 = {p: v for p, v in r1_raw.items()}
     r15_raw = fetch_rsi(ALL_PAIRS, "5d", "15m", 15, return_price=True)
     r15 = {p: val[0] for p, val in r15_raw.items()}
+    rng = fetch_range_used(ALL_PAIRS)
     oanda_data = fetch_oanda_all(ALL_PAIRS)
     news_alerts = fetch_high_impact_news()
     now = datetime.now(TZ)
@@ -613,10 +657,12 @@ def main():
         sess = SESSIONS_MAP[p]
         ext = rsi_ext.get(p, {})
         base = {"pair": p, "sessions": sess, "session": " • ".join(sess),
-                "rsi_1h": r1.get(p), "rsi_15m": r15.get(p),
+                "rsi_4h": r4.get(p), "rsi_1h": r1.get(p), "rsi_15m": r15.get(p),
                 "ob_time": ext.get("ob_time", "-"),
                 "os_time": ext.get("os_time", "-"),
-                "price_action": ext.get("price_action", "-")}
+                "price_action": ext.get("price_action", "-"),
+                "range_used": rng.get(p, {}).get("range_used"),
+                "atr_pips": rng.get(p, {}).get("atr_pips")}
         if not d:
             od = oanda_data.get(p, {})
             os_v, ol_v = od.get("oanda_short"), od.get("oanda_long")
