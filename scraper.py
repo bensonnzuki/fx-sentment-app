@@ -545,13 +545,13 @@ def update_rsi_extremes(r15_data, now_eat):
         if st.get("side") == "OB" and px is not None:
             ob_time = f"{st['time']} ({fmt_px(st['trigger_px'])})"
             if px >= st["trigger_px"]:
-                pa = f"Buy continued to {fmt_px(px)}"
+                pa = "Buy in continuation"
             else:
                 pa = "Buy reversed"
         elif st.get("side") == "OS" and px is not None:
             os_time = f"{st['time']} ({fmt_px(st['trigger_px'])})"
             if px <= st["trigger_px"]:
-                pa = f"Sell continued to {fmt_px(px)}"
+                pa = "Sell in continuation"
             else:
                 pa = "Sell reversed"
 
