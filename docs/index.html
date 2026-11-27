@@ -121,7 +121,7 @@ function render() {
   rows.sort((a,b) => sortBy==="SETUP" ? setupScore(b)-setupScore(a) : (sortBy==="LOTS" ? b.total_lots-a.total_lots : (sortBy==="RSI" ? Math.abs((b.rsi_15m??50)-50)-Math.abs((a.rsi_15m??50)-50) : (sortBy==="NET" ? Math.abs(b.net_lots)-Math.abs(a.net_lots) : a.pair.localeCompare(b.pair)))));
   document.getElementById("list").innerHTML = rows.map(p => {
     const isSig = p.bias==="BUY"||p.bias==="SELL", hasO = p.oanda_short!=null && p.oanda_long!=null;
-    const bLbl = isSig && hasO ? (p.agreed_2of2 ? `${p.bias} • 2/2` : `${p.bias} • 1/2 SPLIT`) : p.bias;
+    const bLbl = isSig && hasO ? (p.agreed_2of2 ? `${p.bias} 2/2` : `${p.bias} 1/2`) : p.bias;
     const bCls = isSig && hasO && !p.agreed_2of2 ? "SPLIT" : (p.bias||"NONE").split(" ")[0];
     const cCls = p.news_warning ? "news" : (p.agreed_2of2 ? (p.bias==="BUY"?"buy2":"sell2") : (isSig?"sig":""));
     const nBadge = p.news_warning ? `<span class="badge NEWS">⚠️ NEWS</span> ` : "";
