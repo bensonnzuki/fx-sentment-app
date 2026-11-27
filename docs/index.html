@@ -27,8 +27,8 @@
   .pair { font-weight:800; font-size:14px; }
   .sess { display:block; font-size:9px; color:#94a3b8; margin:2px 0 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .badge { padding:2px 5px; border-radius:5px; font-size:9px; font-weight:800; white-space:nowrap; }
-  .BUY { background:#14532d; color:#4ade80; border:1px solid #22c55e; }
-  .SELL { background:#7f1d1d; color:#f87171; border:1px solid #ef4444; }
+  .BUY, .NET-BUYERS { background:#14532d; color:#4ade80; border:1px solid #22c55e; }
+  .SELL, .NET-SELLERS { background:#7f1d1d; color:#f87171; border:1px solid #ef4444; }
   .SPLIT { background:#422006; color:#fbbf24; border:1px solid #d97706; }
   .NEWS { background:#78350f; color:#fde047; border:1px solid #eab308; }
   .nwarn { background:#451a03; color:#fde047; border:1px solid #ca8a04; border-radius:5px; padding:3px 5px; font-size:9px; font-weight:700; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -81,14 +81,14 @@ function setFilter(f, el) { filter = f; document.querySelectorAll(".tab").forEac
 function setSort(s, el) { sortBy = s; document.querySelectorAll(".stab").forEach(t => t.classList.remove("active")); el.classList.add("active"); render(); }
 function rsiCls(v) { return v >= 70 ? "hot" : (v <= 30 ? "cold" : ""); }
 function setupScore(p) {
-  let sc = (p.bias === "BUY" || p.bias === "SELL") ? 1000 : (p.bias === "LOW VOL" || p.bias === "NO DATA" ? -500 : 0);
+  let sc = (p.bias === "NET-BUYERS" || p.bias === "NET-SELLERS") ? 1000 : (p.bias === "LOW VOL" || p.bias === "NO DATA" ? -500 : 0);
   if (p.news_warning) sc -= 150;
   if (p.news_warning) sc -= 150;
   if (p.agreed_2of2) sc += 200;
-  else if ((p.bias === "BUY" || p.bias === "SELL") && p.oanda_long != null) sc -= 80;
+  else if ((p.bias === "NET-BUYERS" || p.bias === "NET-SELLERS") && p.oanda_long != null) sc -= 80;
   sc += Math.abs(p.net_sale - p.net_buy);
-  if (p.bias === "BUY" && p.rsi_15m && p.rsi_15m <= 35) sc += 40;
-  if (p.bias === "SELL" && p.rsi_15m && p.rsi_15m >= 65) sc += 40;
+  if (p.bias === "NET-BUYERS" && p.rsi_15m && p.rsi_15m <= 35) sc += 40;
+  if (p.bias === "NET-SELLERS" && p.rsi_15m && p.rsi_15m >= 65) sc += 40;
   return sc;
 }
 function updateCounts() {
@@ -100,7 +100,7 @@ function updateCounts() {
     "NEW YORK": allPairs.filter(p => (p.sessions||[]).includes("NEW YORK")).length,
     COMMODITIES: allPairs.filter(p => (p.sessions||[]).includes("COMMODITIES")).length,
     AGREED: allPairs.filter(p => p.agreed_2of2).length,
-    SIGNALS: allPairs.filter(p => p.bias==="BUY"||p.bias==="SELL").length,
+    SIGNALS: allPairs.filter(p => p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS").length,
     NEWS: allPairs.filter(p => p.news_warning).length
   };
   const labels = { AGREED: "INSYNC", "NEW YORK": "NEW-YORK", NEWS: "⚠️ NEWS" };
@@ -111,16 +111,16 @@ function updateCounts() {
 }
 function render() {
   updateCounts();
-  let rows = allPairs.filter(p => filter==="NEWS" ? p.news_warning : (filter==="AGREED" ? p.agreed_2of2 :  (filter==="SIGNALS" ? (p.bias==="BUY"||p.bias==="SELL") : (filter==="ALL" ? true : (p.sessions||[]).includes(filter)))));
+  let rows = allPairs.filter(p => filter==="NEWS" ? p.news_warning : (filter==="AGREED" ? p.agreed_2of2 :  (filter==="SIGNALS" ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (filter==="ALL" ? true : (p.sessions||[]).includes(filter)))));
   rows.sort((a,b) => sortBy==="SETUP" ? setupScore(b)-setupScore(a) : (sortBy==="LOTS" ? b.total_lots-a.total_lots : (sortBy==="RSI" ? Math.abs((b.rsi_15m??50)-50)-Math.abs((a.rsi_15m??50)-50) : (sortBy==="NET" ? Math.abs(b.net_lots)-Math.abs(a.net_lots) : a.pair.localeCompare(b.pair)))));
   document.getElementById("list").innerHTML = rows.map(p => {
-    const isSig = p.bias==="BUY"||p.bias==="SELL", hasO = p.oanda_short!=null && p.oanda_long!=null;
+    const isSig = p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS", hasO = p.oanda_short!=null && p.oanda_long!=null;
     const bLbl = isSig && hasO ? (p.agreed_2of2 ? `${p.bias} 2/2` : `${p.bias} 1/2`) : p.bias;
     const bCls = isSig && hasO && !p.agreed_2of2 ? "SPLIT" : (p.bias||"NONE").split(" ")[0];
     const cCls = p.news_warning ? "news" : (p.agreed_2of2 ? (p.bias==="BUY"?"buy2":"sell2") : (isSig?"sig":""));
     const nBadge = p.news_warning ? `<span class="badge NEWS">⚠️ NEWS</span> ` : "";
     const nBanner = p.news_warning ? `<div class="nwarn" title="${p.news_warning}">⚠️ ${p.news_warning}</div>` : "";
-    return `<div class="card"><div class="row1"><span class="pair">${p.pair}</span><div>${nBadge}<span class="badge ${bCls}">${bLbl}</span></div></div><span class="sess">${(p.sessions||[]).join(' • ')}</span>${nBanner}${nBanner}<div class="bwrap"><div class="blbl"><span>MFB ${p.net_sale}% S</span><span>${p.net_buy}% L</span></div><div class="bar"><div class="b-short" style="width:${p.net_sale}%"></div><div class="b-long" style="width:${p.net_buy}%"></div></div></div>${hasO?`<div class="bwrap"><div class="blbl"><span class="cyan">OANDA ${p.oanda_short}% S</span><span class="cyan">${p.oanda_long}% L</span></div><div class="bar"><div class="b-short" style="width:${p.oanda_short}%"></div><div class="b-long" style="width:${p.oanda_long}%"></div></div></div>`:""}<div class="grid"><div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h??'-'}</div></div><div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m??'-'}</div></div><div>Total Lots<div class="val">${Math.round(p.total_lots).toLocaleString()}</div></div><div>Net Lots<div class="val ${p.net_lots>0?'cold':(p.net_lots<0?'hot':'')}">${p.net_lots>0?'+':''}${Math.round(p.net_lots).toLocaleString()}</div></div></div></div>`;
+    return `<div class="card"><div class="row1"><span class="pair">${p.pair}</span><div>${nBadge}<span class="badge ${bCls}">${bLbl}</span></div></div><span class="sess">${(p.sessions||[]).join(' • ')}</span>${nBanner}<div class="bwrap"><div class="blbl"><span>MFB ${p.net_sale}% S</span><span>${p.net_buy}% L</span></div><div class="bar"><div class="b-short" style="width:${p.net_sale}%"></div><div class="b-long" style="width:${p.net_buy}%"></div></div></div>${hasO?`<div class="bwrap"><div class="blbl"><span class="cyan">OANDA ${p.oanda_short}% S</span><span class="cyan">${p.oanda_long}% L</span></div><div class="bar"><div class="b-short" style="width:${p.oanda_short}%"></div><div class="b-long" style="width:${p.oanda_long}%"></div></div></div>`:""}<div class="grid"><div>1H RSI<div class="val ${rsiCls(p.rsi_1h)}">${p.rsi_1h??'-'}</div></div><div>15M RSI<div class="val ${rsiCls(p.rsi_15m)}">${p.rsi_15m??'-'}</div></div><div>Total Lots<div class="val">${Math.round(p.total_lots).toLocaleString()}</div></div><div>Net Lots<div class="val ${p.net_lots>0?'cold':(p.net_lots<0?'hot':'')}">${p.net_lots>0?'+':''}${Math.round(p.net_lots).toLocaleString()}</div></div></div></div>`;
   }).join("");
 }
 async function load(manual) {

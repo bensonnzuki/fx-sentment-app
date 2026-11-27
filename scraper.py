@@ -341,7 +341,7 @@ def update_excel(now_naive, rows, sentiment_changed):
             style(ws.cell(row=row, column=6), d["net_buy_vol"], "#,##0.00", rf, align="right")
             style(ws.cell(row=row, column=9), d["total_lots"], "#,##0.00", rf, align="right")
             style(ws.cell(row=row, column=10), d["net_lots"], "+#,##0.00;-#,##0.00;0.00", rf, align="right")
-            bf, bt = {"BUY": (GREEN_FILL, GREEN_FONT), "SELL": (RED_FILL, RED_FONT),
+            bf, bt = {"NET-BUYERS": (GREEN_FILL, GREEN_FONT), "NET-SELLERS": (RED_FILL, RED_FONT),
                       "LOW VOL": (rf, GREY_FONT)}.get(d["bias"], (rf, NORM_FONT))
             style(ws.cell(row=row, column=11), d["bias"], fill=bf, font=bt)
             history.append([pair, ns, nb, d["net_sale_vol"], d["net_buy_vol"], d["total_lots"],
@@ -539,7 +539,7 @@ def main():
         if not d:
             od = oanda_data.get(p, {})
             os_v, ol_v = od.get("oanda_short"), od.get("oanda_long")
-            o_bias = ("BUY" if (os_v or 0) >= 70.0 else "SELL" if (ol_v or 0) >= 70.0 else "OANDA ONLY") if os_v is not None else "NO DATA"
+            o_bias = ("NET-BUYERS" if (ol_v or 0) >= 70.0 else "NET-SELLERS" if (os_v or 0) >= 70.0 else "OANDA ONLY") if os_v is not None else "NO DATA"
             rows.append({**base, "net_sale": 0.0, "net_sale_vol": 0.0, "net_buy": 0.0, "net_buy_vol": 0.0,
                          "total_lots": 0.0, "net_lots": 0.0, "bias": o_bias,
                          "oanda_short": os_v, "oanda_long": ol_v,
@@ -551,8 +551,8 @@ def main():
             continue
         tot = round(d["net_sale_vol"] + d["net_buy_vol"], 2)
         net = round(d["net_buy_vol"] - d["net_sale_vol"], 2)
-        bias = ("LOW VOL" if tot < MIN_LOTS else "BUY" if d["net_sale"] >= BIAS_PCT
-                else "SELL" if d["net_buy"] >= BIAS_PCT else "NONE")
+        bias = ("LOW VOL" if tot < MIN_LOTS else "NET-BUYERS" if d["net_buy"] >= BIAS_PCT
+                else "NET-SELLERS" if d["net_sale"] >= BIAS_PCT else "NONE")
         rows.append({**base, "net_sale": round(d["net_sale"] * 100, 1), "net_sale_vol": d["net_sale_vol"],
                      "net_buy": round(d["net_buy"] * 100, 1), "net_buy_vol": d["net_buy_vol"],
                      "total_lots": tot, "net_lots": net, "bias": bias,
@@ -562,8 +562,8 @@ def main():
             "stop_side": oanda_data.get(p, {}).get("stop_side"),
             "rvol": oanda_data.get(p, {}).get("rvol"),
             "agreed_2of2": (
-                (bias == "BUY" and (oanda_data.get(p, {}).get("oanda_short") or 0) >= 70.0) or
-                (bias == "SELL" and (oanda_data.get(p, {}).get("oanda_long") or 0) >= 70.0)
+                (bias == "NET-BUYERS" and (oanda_data.get(p, {}).get("oanda_long") or 0) >= 70.0) or
+                (bias == "NET-SELLERS" and (oanda_data.get(p, {}).get("oanda_short") or 0) >= 70.0)
             ),
             "news_warning": " • ".join(dict.fromkeys(
                 [news_alerts[c] for c in (("USD",) if p in COMMODITIES else (p[:3], p[3:])) if c in news_alerts]
