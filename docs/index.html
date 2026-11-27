@@ -67,6 +67,7 @@
     <div class="tab" data-f="LONDON" onclick="setFilter('LONDON',this)">LONDON (0)</div>
     <div class="tab" data-f="LONDON-NY" onclick="setFilter('LONDON-NY',this)">LONDON-NY (0)</div>
     <div class="tab" data-f="NEW YORK" onclick="setFilter('NEW YORK',this)">NEW YORK (0)</div>
+    <div class="tab" style="border:1px solid #f59e0b;color:#fbbf24;" data-f="COMMODITIES" onclick="setFilter('COMMODITIES',this)">COMMODITIES (0)</div>
   </div>
   <div class="tabs">
     <span class="lbl">SORT:</span>
@@ -104,7 +105,8 @@ function updateCounts() {
     TIGER: allPairs.filter(p => (p.sessions||[]).includes("TIGER")).length,
     LONDON: allPairs.filter(p => (p.sessions||[]).includes("LONDON")).length,
     "LONDON-NY": allPairs.filter(p => (p.sessions||[]).includes("LONDON-NY")).length,
-    "NEW YORK": allPairs.filter(p => (p.sessions||[]).includes("NEW YORK")).length
+    "NEW YORK": allPairs.filter(p => (p.sessions||[]).includes("NEW YORK")).length,
+    COMMODITIES: allPairs.filter(p => (p.sessions||[]).includes("COMMODITIES")).length
   };
   document.querySelectorAll("#ftabs .tab").forEach(t => {
     const k = t.getAttribute("data-f");

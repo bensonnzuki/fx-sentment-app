@@ -57,7 +57,14 @@ SESSIONS_MAP = {
     "GBPCHF": ["LONDON"],
     "CADCHF": ["LONDON", "LONDON-NY", "NEW YORK"],
     "NZDCAD": ["NEW YORK"],
+    "XAUUSD": ["COMMODITIES", "LONDON", "LONDON-NY", "NEW YORK"],
+    "XAGUSD": ["COMMODITIES", "LONDON", "LONDON-NY", "NEW YORK"],
+    "UKOIL": ["COMMODITIES", "LONDON", "LONDON-NY", "NEW YORK"],
+    "USOIL": ["COMMODITIES", "LONDON", "LONDON-NY", "NEW YORK"],
 }
+COMMODITIES = {"XAUUSD", "XAGUSD", "UKOIL", "USOIL"}
+YF_MAP = {"XAUUSD": "GC=F", "XAGUSD": "SI=F", "UKOIL": "BZ=F", "USOIL": "CL=F"}
+OANDA_MAP = {"UKOIL": "BCOUSD", "USOIL": "OILWTI"}
 ALL_PAIRS = list(SESSIONS_MAP.keys())
 TARGET_URL = "https://www." + "myfxbook" + ".com/community/outlook"
 JINA_URL = "https://r." + "jina" + ".ai/" + TARGET_URL
@@ -203,7 +210,7 @@ def wilder_rsi(close, period=14):
 def fetch_rsi(pairs, period, interval, mins):
     out = {p: None for p in pairs}
     try:
-        tickers = [f"{p}=X" for p in pairs]
+        tickers = [YF_MAP.get(p, f"{p}=X") for p in pairs]
         df = yf.download(tickers, period=period, interval=interval, group_by="ticker",
                          progress=False, threads=True, auto_adjust=False)
         now = datetime.now(timezone.utc)
@@ -417,9 +424,10 @@ def fetch_oanda_all(pairs):
             txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", page.content()))
             b.close()
         for p in pairs:
-            m = re.search(rf"\b{p}\b\s+\b{p}\b\s+(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
+            op = OANDA_MAP.get(p, p)
+            m = re.search(rf"\b{op}\b\s+\b{op}\b\s+(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
             if not m:
-                m = re.search(rf"\b{p}\b.{{1,80}}?(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
+                m = re.search(rf"\b{op}\b.{{1,80}}?(\d+(?:\.\d+)?)\s*%\s+(\d+(?:\.\d+)?)\s*%", txt)
             if m:
                 # The header says "% trades that sell / buy", but the numbers are BUY first:
                 # the page's own labels match it (GOLD 71% 29% = "71% traders are buying",
@@ -545,7 +553,7 @@ def main():
                 (bias == "SELL" and (oanda_data.get(p, {}).get("oanda_long") or 0) >= 70.0)
             ),
             "news_warning": " • ".join(dict.fromkeys(
-                [news_alerts[c] for c in (p[:3], p[3:]) if c in news_alerts]
+                [news_alerts[c] for c in (("USD",) if p in COMMODITIES else (p[:3], p[3:])) if c in news_alerts]
             )) or None})
 
     sig = lambda rs: [(x["pair"], x["net_sale"], x["total_lots"], x["rsi_1h"], x["rsi_15m"], x["bias"]) for x in rs]
