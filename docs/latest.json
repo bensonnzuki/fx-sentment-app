@@ -1,10 +1,10 @@
 {
-  "updated": "2026-11-27 14:05 EAT",
+  "updated": "2026-11-27 14:06 EAT",
   "fingerprint": {
     "source": "direct",
     "data_hash": "fe7b2b0c708c",
-    "diag": "direct:status=200,len=721446,added=30 | browser:status=ok,len=44772,added=0 | jina:status=200,len=512,added=0",
-    "sentiment_changed": true,
+    "diag": "direct:status=200,len=721449,added=30 | browser:status=ok,len=44772,added=0 | jina:status=200,len=83908,added=0",
+    "sentiment_changed": false,
     "sentiment_since": "2026-11-27 14:05 EAT"
   },
   "pairs": [
@@ -342,7 +342,7 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_1h": 70.2,
+      "rsi_1h": 70.3,
       "rsi_15m": 61.5,
       "ob_time": "-",
       "os_time": "-",
@@ -395,8 +395,8 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_1h": 52.5,
-      "rsi_15m": 54.9,
+      "rsi_1h": 52.2,
+      "rsi_15m": 54.2,
       "ob_time": "-",
       "os_time": "-",
       "price_action": "-",
@@ -534,7 +534,7 @@
         "NEW YORK"
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_1h": 48.7,
+      "rsi_1h": 48.8,
       "rsi_15m": 47.5,
       "ob_time": "-",
       "os_time": "-",
@@ -586,7 +586,7 @@
         "LONDON"
       ],
       "session": "LONDON",
-      "rsi_1h": 59.4,
+      "rsi_1h": 59.3,
       "rsi_15m": 52.9,
       "ob_time": "-",
       "os_time": "-",
@@ -669,7 +669,7 @@
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
       "rsi_1h": 61.5,
-      "rsi_15m": 55.5,
+      "rsi_15m": 55.6,
       "ob_time": "-",
       "os_time": "-",
       "price_action": "-",
