@@ -1,11 +1,11 @@
 {
-  "updated": "2026-11-27 15:40 EAT",
+  "updated": "2026-11-27 15:44 EAT",
   "fingerprint": {
     "source": "direct",
-    "data_hash": "5ba6832ad0f6",
-    "diag": "direct:status=200,len=721444,added=30 | browser:status=ok,len=44793,added=0 | jina:status=200,len=477,added=0",
+    "data_hash": "cb7fc58db3e4",
+    "diag": "direct:status=200,len=721444,added=30 | browser:status=ok,len=44772,added=0 | jina:status=200,len=477,added=0",
     "sentiment_changed": true,
-    "sentiment_since": "2026-11-27 15:40 EAT"
+    "sentiment_since": "2026-11-27 15:44 EAT"
   },
   "pairs": [
     {
@@ -17,14 +17,8 @@
         "NEW YORK"
       ],
       "session": "ASIA \u2022 LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        55.9,
-        56.4
-      ],
-      "rsi_1h": [
-        55.9,
-        56.4
-      ],
+      "rsi_4h": 56.4,
+      "rsi_1h": 55.9,
       "rsi_15m": 55.3,
       "ob_time": "-",
       "os_time": "-",
@@ -32,11 +26,11 @@
       "range_used": 50,
       "atr_pips": 88.4,
       "net_sale": 53.0,
-      "net_sale_vol": 741.38,
+      "net_sale_vol": 741.99,
       "net_buy": 47.0,
-      "net_buy_vol": 653.93,
-      "total_lots": 1395.31,
-      "net_lots": -87.45,
+      "net_buy_vol": 652.41,
+      "total_lots": 1394.4,
+      "net_lots": -89.58,
       "bias": "NONE",
       "oanda_short": 58.0,
       "oanda_long": 42.0,
@@ -53,14 +47,8 @@
         "NEW YORK"
       ],
       "session": "ASIA \u2022 NEW YORK",
-      "rsi_4h": [
-        64.0,
-        59.9
-      ],
-      "rsi_1h": [
-        64.0,
-        59.9
-      ],
+      "rsi_4h": 59.9,
+      "rsi_1h": 64.0,
       "rsi_15m": 52.2,
       "ob_time": "-",
       "os_time": "-",
@@ -70,9 +58,9 @@
       "net_sale": 24.0,
       "net_sale_vol": 599.78,
       "net_buy": 76.0,
-      "net_buy_vol": 1921.64,
-      "total_lots": 2521.42,
-      "net_lots": 1321.86,
+      "net_buy_vol": 1921.9,
+      "total_lots": 2521.68,
+      "net_lots": 1322.12,
       "bias": "NET-BUYERS",
       "oanda_short": 25.0,
       "oanda_long": 75.0,
@@ -89,14 +77,8 @@
         "NEW YORK"
       ],
       "session": "ASIA \u2022 NEW YORK",
-      "rsi_4h": [
-        54.6,
-        54.9
-      ],
-      "rsi_1h": [
-        54.6,
-        54.9
-      ],
+      "rsi_4h": 54.9,
+      "rsi_1h": 54.6,
       "rsi_15m": 51.2,
       "ob_time": "-",
       "os_time": "-",
@@ -126,14 +108,8 @@
         "LONDON-NY"
       ],
       "session": "ASIA \u2022 LONDON \u2022 LONDON-NY",
-      "rsi_4h": [
-        52.7,
-        54.0
-      ],
-      "rsi_1h": [
-        52.7,
-        54.0
-      ],
+      "rsi_4h": 54.0,
+      "rsi_1h": 52.7,
       "rsi_15m": 53.5,
       "ob_time": "-",
       "os_time": "-",
@@ -141,11 +117,11 @@
       "range_used": 32,
       "atr_pips": 119.4,
       "net_sale": 42.0,
-      "net_sale_vol": 453.55,
+      "net_sale_vol": 453.3,
       "net_buy": 58.0,
-      "net_buy_vol": 620.65,
-      "total_lots": 1074.2,
-      "net_lots": 167.1,
+      "net_buy_vol": 620.66,
+      "total_lots": 1073.96,
+      "net_lots": 167.36,
       "bias": "NONE",
       "oanda_short": 38.0,
       "oanda_long": 62.0,
@@ -163,14 +139,8 @@
         "LONDON-NY"
       ],
       "session": "ASIA \u2022 LONDON \u2022 LONDON-NY",
-      "rsi_4h": [
-        63.0,
-        59.3
-      ],
-      "rsi_1h": [
-        63.0,
-        59.3
-      ],
+      "rsi_4h": 59.3,
+      "rsi_1h": 63.0,
       "rsi_15m": 64.1,
       "ob_time": "-",
       "os_time": "-",
@@ -180,9 +150,9 @@
       "net_sale": 40.0,
       "net_sale_vol": 204.66,
       "net_buy": 60.0,
-      "net_buy_vol": 302.59,
-      "total_lots": 507.25,
-      "net_lots": 97.93,
+      "net_buy_vol": 302.6,
+      "total_lots": 507.26,
+      "net_lots": 97.94,
       "bias": "NONE",
       "oanda_short": 30.0,
       "oanda_long": 70.0,
@@ -199,14 +169,8 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_4h": [
-        64.3,
-        61.2
-      ],
-      "rsi_1h": [
-        64.3,
-        61.2
-      ],
+      "rsi_4h": 61.2,
+      "rsi_1h": 64.3,
       "rsi_15m": 54.5,
       "ob_time": "-",
       "os_time": "-",
@@ -235,14 +199,8 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_4h": [
-        35.2,
-        39.9
-      ],
-      "rsi_1h": [
-        35.2,
-        39.9
-      ],
+      "rsi_4h": 39.9,
+      "rsi_1h": 35.2,
       "rsi_15m": 46.6,
       "ob_time": "-",
       "os_time": "-",
@@ -250,11 +208,11 @@
       "range_used": 110,
       "atr_pips": 126.4,
       "net_sale": 46.0,
-      "net_sale_vol": 301.4,
+      "net_sale_vol": 301.48,
       "net_buy": 54.0,
       "net_buy_vol": 359.21,
-      "total_lots": 660.61,
-      "net_lots": 57.81,
+      "total_lots": 660.69,
+      "net_lots": 57.73,
       "bias": "NONE",
       "oanda_short": 68.0,
       "oanda_long": 32.0,
@@ -271,14 +229,8 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_4h": [
-        40.7,
-        43.6
-      ],
-      "rsi_1h": [
-        40.7,
-        43.6
-      ],
+      "rsi_4h": 43.6,
+      "rsi_1h": 40.7,
       "rsi_15m": 55.4,
       "ob_time": "-",
       "os_time": "-",
@@ -286,11 +238,11 @@
       "range_used": 85,
       "atr_pips": 141.0,
       "net_sale": 82.0,
-      "net_sale_vol": 347.86,
+      "net_sale_vol": 347.92,
       "net_buy": 18.0,
       "net_buy_vol": 78.28,
-      "total_lots": 426.14,
-      "net_lots": -269.58,
+      "total_lots": 426.2,
+      "net_lots": -269.64,
       "bias": "NET-SELLERS",
       "oanda_short": null,
       "oanda_long": null,
@@ -307,14 +259,8 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_4h": [
-        53.4,
-        59.2
-      ],
-      "rsi_1h": [
-        53.4,
-        59.2
-      ],
+      "rsi_4h": 59.2,
+      "rsi_1h": 53.4,
       "rsi_15m": 62.8,
       "ob_time": "-",
       "os_time": "-",
@@ -324,9 +270,9 @@
       "net_sale": 40.0,
       "net_sale_vol": 98.36,
       "net_buy": 60.0,
-      "net_buy_vol": 146.92,
-      "total_lots": 245.28,
-      "net_lots": 48.56,
+      "net_buy_vol": 146.84,
+      "total_lots": 245.2,
+      "net_lots": 48.48,
       "bias": "NONE",
       "oanda_short": 71.0,
       "oanda_long": 29.0,
@@ -343,14 +289,8 @@
         "NEW YORK"
       ],
       "session": "ASIA \u2022 NEW YORK",
-      "rsi_4h": [
-        54.9,
-        62.0
-      ],
-      "rsi_1h": [
-        54.9,
-        62.0
-      ],
+      "rsi_4h": 62.0,
+      "rsi_1h": 54.9,
       "rsi_15m": 60.1,
       "ob_time": "-",
       "os_time": "-",
@@ -378,14 +318,8 @@
         "ASIA"
       ],
       "session": "ASIA",
-      "rsi_4h": [
-        57.2,
-        57.3
-      ],
-      "rsi_1h": [
-        57.2,
-        57.3
-      ],
+      "rsi_4h": 57.3,
+      "rsi_1h": 57.2,
       "rsi_15m": 54.1,
       "ob_time": "-",
       "os_time": "-",
@@ -414,14 +348,8 @@
         "NEW YORK"
       ],
       "session": "ASIA \u2022 NEW YORK",
-      "rsi_4h": [
-        64.7,
-        56.2
-      ],
-      "rsi_1h": [
-        64.7,
-        56.2
-      ],
+      "rsi_4h": 56.2,
+      "rsi_1h": 64.7,
       "rsi_15m": 48.8,
       "ob_time": "-",
       "os_time": "-",
@@ -429,11 +357,11 @@
       "range_used": 104,
       "atr_pips": 73.7,
       "net_sale": 45.0,
-      "net_sale_vol": 2772.17,
+      "net_sale_vol": 2771.78,
       "net_buy": 55.0,
-      "net_buy_vol": 3383.31,
-      "total_lots": 6155.48,
-      "net_lots": 611.14,
+      "net_buy_vol": 3383.24,
+      "total_lots": 6155.02,
+      "net_lots": 611.46,
       "bias": "NONE",
       "oanda_short": 17.0,
       "oanda_long": 83.0,
@@ -450,14 +378,8 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_4h": [
-        59.2,
-        55.3
-      ],
-      "rsi_1h": [
-        59.2,
-        55.3
-      ],
+      "rsi_4h": 55.3,
+      "rsi_1h": 59.2,
       "rsi_15m": 46.2,
       "ob_time": "-",
       "os_time": "-",
@@ -467,9 +389,9 @@
       "net_sale": 36.0,
       "net_sale_vol": 126.07,
       "net_buy": 64.0,
-      "net_buy_vol": 227.41,
-      "total_lots": 353.48,
-      "net_lots": 101.34,
+      "net_buy_vol": 227.69,
+      "total_lots": 353.76,
+      "net_lots": 101.62,
       "bias": "NONE",
       "oanda_short": 24.0,
       "oanda_long": 76.0,
@@ -485,14 +407,8 @@
         "ASIA"
       ],
       "session": "ASIA",
-      "rsi_4h": [
-        60.3,
-        58.5
-      ],
-      "rsi_1h": [
-        60.3,
-        58.5
-      ],
+      "rsi_4h": 58.5,
+      "rsi_1h": 60.3,
       "rsi_15m": 52.2,
       "ob_time": "-",
       "os_time": "-",
@@ -500,11 +416,11 @@
       "range_used": 97,
       "atr_pips": 87.1,
       "net_sale": 65.0,
-      "net_sale_vol": 1492.86,
+      "net_sale_vol": 1492.1,
       "net_buy": 35.0,
-      "net_buy_vol": 789.71,
-      "total_lots": 2282.57,
-      "net_lots": -703.15,
+      "net_buy_vol": 789.73,
+      "total_lots": 2281.83,
+      "net_lots": -702.37,
       "bias": "NONE",
       "oanda_short": 50.0,
       "oanda_long": 50.0,
@@ -521,14 +437,8 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_4h": [
-        52.4,
-        50.6
-      ],
-      "rsi_1h": [
-        52.4,
-        50.6
-      ],
+      "rsi_4h": 50.6,
+      "rsi_1h": 52.4,
       "rsi_15m": 56.8,
       "ob_time": "-",
       "os_time": "-",
@@ -536,11 +446,11 @@
       "range_used": 127,
       "atr_pips": 136.1,
       "net_sale": 84.0,
-      "net_sale_vol": 222.95,
+      "net_sale_vol": 222.91,
       "net_buy": 16.0,
       "net_buy_vol": 43.54,
-      "total_lots": 266.49,
-      "net_lots": -179.41,
+      "total_lots": 266.45,
+      "net_lots": -179.37,
       "bias": "NET-SELLERS",
       "oanda_short": 76.0,
       "oanda_long": 24.0,
@@ -557,14 +467,8 @@
         "LONDON"
       ],
       "session": "ASIA \u2022 LONDON",
-      "rsi_4h": [
-        42.9,
-        43.9
-      ],
-      "rsi_1h": [
-        42.9,
-        43.9
-      ],
+      "rsi_4h": 43.9,
+      "rsi_1h": 42.9,
       "rsi_15m": 47.7,
       "ob_time": "-",
       "os_time": "-",
@@ -594,14 +498,8 @@
         "NEW YORK"
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        47.1,
-        50.5
-      ],
-      "rsi_1h": [
-        47.1,
-        50.5
-      ],
+      "rsi_4h": 50.5,
+      "rsi_1h": 47.1,
       "rsi_15m": 49.7,
       "ob_time": "-",
       "os_time": "-",
@@ -609,11 +507,11 @@
       "range_used": 41,
       "atr_pips": 70.0,
       "net_sale": 21.0,
-      "net_sale_vol": 3630.33,
+      "net_sale_vol": 3629.11,
       "net_buy": 79.0,
-      "net_buy_vol": 13392.25,
-      "total_lots": 17022.58,
-      "net_lots": 9761.92,
+      "net_buy_vol": 13392.39,
+      "total_lots": 17021.5,
+      "net_lots": 9763.28,
       "bias": "NET-BUYERS",
       "oanda_short": 29.0,
       "oanda_long": 71.0,
@@ -631,14 +529,8 @@
         "NEW YORK"
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        62.7,
-        57.0
-      ],
-      "rsi_1h": [
-        62.7,
-        57.0
-      ],
+      "rsi_4h": 57.0,
+      "rsi_1h": 62.7,
       "rsi_15m": 62.2,
       "ob_time": "-",
       "os_time": "-",
@@ -646,11 +538,11 @@
       "range_used": 49,
       "atr_pips": 82.9,
       "net_sale": 25.0,
-      "net_sale_vol": 1396.67,
+      "net_sale_vol": 1395.0,
       "net_buy": 75.0,
-      "net_buy_vol": 4153.19,
-      "total_lots": 5549.86,
-      "net_lots": 2756.52,
+      "net_buy_vol": 4153.96,
+      "total_lots": 5548.96,
+      "net_lots": 2758.96,
       "bias": "NET-BUYERS",
       "oanda_short": 28.0,
       "oanda_long": 72.0,
@@ -668,14 +560,8 @@
         "NEW YORK"
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        50.5,
-        44.7
-      ],
-      "rsi_1h": [
-        50.5,
-        44.7
-      ],
+      "rsi_4h": 44.7,
+      "rsi_1h": 50.5,
       "rsi_15m": 41.8,
       "ob_time": "-",
       "os_time": "-",
@@ -683,11 +569,11 @@
       "range_used": 50,
       "atr_pips": 67.9,
       "net_sale": 45.0,
-      "net_sale_vol": 425.31,
+      "net_sale_vol": 425.3,
       "net_buy": 55.0,
-      "net_buy_vol": 528.07,
+      "net_buy_vol": 528.08,
       "total_lots": 953.38,
-      "net_lots": 102.76,
+      "net_lots": 102.78,
       "bias": "NONE",
       "oanda_short": 30.0,
       "oanda_long": 70.0,
@@ -705,14 +591,8 @@
         "NEW YORK"
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        50.2,
-        41.1
-      ],
-      "rsi_1h": [
-        50.2,
-        41.1
-      ],
+      "rsi_4h": 41.1,
+      "rsi_1h": 50.3,
       "rsi_15m": 44.6,
       "ob_time": "-",
       "os_time": "-",
@@ -720,10 +600,10 @@
       "range_used": 50,
       "atr_pips": 74.7,
       "net_sale": 67.0,
-      "net_sale_vol": 1119.34,
+      "net_sale_vol": 1119.36,
       "net_buy": 33.0,
-      "net_buy_vol": 540.92,
-      "total_lots": 1660.26,
+      "net_buy_vol": 540.94,
+      "total_lots": 1660.3,
       "net_lots": -578.42,
       "bias": "NONE",
       "oanda_short": 76.0,
@@ -740,14 +620,8 @@
         "LONDON"
       ],
       "session": "LONDON",
-      "rsi_4h": [
-        30.4,
-        37.7
-      ],
-      "rsi_1h": [
-        30.4,
-        37.7
-      ],
+      "rsi_4h": 37.7,
+      "rsi_1h": 30.4,
       "rsi_15m": 38.2,
       "ob_time": "-",
       "os_time": "-",
@@ -755,11 +629,11 @@
       "range_used": 100,
       "atr_pips": 26.6,
       "net_sale": 9.0,
-      "net_sale_vol": 221.02,
+      "net_sale_vol": 220.98,
       "net_buy": 91.0,
-      "net_buy_vol": 2189.01,
-      "total_lots": 2410.03,
-      "net_lots": 1967.99,
+      "net_buy_vol": 2189.08,
+      "total_lots": 2410.06,
+      "net_lots": 1968.1,
       "bias": "NET-BUYERS",
       "oanda_short": 21.0,
       "oanda_long": 79.0,
@@ -775,14 +649,8 @@
         "LONDON"
       ],
       "session": "LONDON",
-      "rsi_4h": [
-        48.8,
-        44.6
-      ],
-      "rsi_1h": [
-        48.8,
-        44.6
-      ],
+      "rsi_4h": 44.6,
+      "rsi_1h": 48.8,
       "rsi_15m": 39.2,
       "ob_time": "-",
       "os_time": "-",
@@ -790,11 +658,11 @@
       "range_used": 57,
       "atr_pips": 53.1,
       "net_sale": 35.0,
-      "net_sale_vol": 165.08,
+      "net_sale_vol": 165.09,
       "net_buy": 65.0,
       "net_buy_vol": 313.36,
-      "total_lots": 478.44,
-      "net_lots": 148.28,
+      "total_lots": 478.45,
+      "net_lots": 148.27,
       "bias": "NONE",
       "oanda_short": 18.0,
       "oanda_long": 82.0,
@@ -812,14 +680,8 @@
         "NEW YORK"
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        46.7,
-        41.3
-      ],
-      "rsi_1h": [
-        46.7,
-        41.3
-      ],
+      "rsi_4h": 41.3,
+      "rsi_1h": 46.7,
       "rsi_15m": 42.4,
       "ob_time": "-",
       "os_time": "-",
@@ -847,14 +709,8 @@
         "LONDON"
       ],
       "session": "LONDON",
-      "rsi_4h": [
-        54.7,
-        50.9
-      ],
-      "rsi_1h": [
-        54.7,
-        50.9
-      ],
+      "rsi_4h": 50.9,
+      "rsi_1h": 54.7,
       "rsi_15m": 43.3,
       "ob_time": "-",
       "os_time": "-",
@@ -884,26 +740,20 @@
         "NEW YORK"
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        64.1,
-        49.8
-      ],
-      "rsi_1h": [
-        64.1,
-        49.8
-      ],
+      "rsi_4h": 49.8,
+      "rsi_1h": 64.1,
       "rsi_15m": 54.3,
       "ob_time": "-",
       "os_time": "-",
       "price_action": "-",
       "range_used": 60,
       "atr_pips": 90.1,
-      "net_sale": 33.0,
-      "net_sale_vol": 91.43,
-      "net_buy": 67.0,
-      "net_buy_vol": 182.43,
-      "total_lots": 273.86,
-      "net_lots": 91.0,
+      "net_sale": 34.0,
+      "net_sale_vol": 91.59,
+      "net_buy": 66.0,
+      "net_buy_vol": 180.05,
+      "total_lots": 271.64,
+      "net_lots": 88.46,
       "bias": "NONE",
       "oanda_short": 52.0,
       "oanda_long": 48.0,
@@ -919,14 +769,8 @@
         "LONDON"
       ],
       "session": "LONDON",
-      "rsi_4h": [
-        57.5,
-        51.0
-      ],
-      "rsi_1h": [
-        57.5,
-        51.0
-      ],
+      "rsi_4h": 51.0,
+      "rsi_1h": 57.5,
       "rsi_15m": 48.1,
       "ob_time": "-",
       "os_time": "-",
@@ -934,11 +778,11 @@
       "range_used": 88,
       "atr_pips": 67.2,
       "net_sale": 47.0,
-      "net_sale_vol": 126.69,
+      "net_sale_vol": 126.6,
       "net_buy": 53.0,
-      "net_buy_vol": 142.47,
-      "total_lots": 269.16,
-      "net_lots": 15.78,
+      "net_buy_vol": 142.49,
+      "total_lots": 269.09,
+      "net_lots": 15.89,
       "bias": "NONE",
       "oanda_short": 31.0,
       "oanda_long": 69.0,
@@ -956,26 +800,20 @@
         "NEW YORK"
       ],
       "session": "LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        50.5,
-        51.1
-      ],
-      "rsi_1h": [
-        50.5,
-        51.1
-      ],
+      "rsi_4h": 51.1,
+      "rsi_1h": 50.5,
       "rsi_15m": 45.0,
       "ob_time": "-",
       "os_time": "-",
       "price_action": "-",
       "range_used": 75,
       "atr_pips": 37.7,
-      "net_sale": 24.0,
-      "net_sale_vol": 82.32,
-      "net_buy": 76.0,
-      "net_buy_vol": 267.58,
-      "total_lots": 349.9,
-      "net_lots": 185.26,
+      "net_sale": 23.0,
+      "net_sale_vol": 82.03,
+      "net_buy": 77.0,
+      "net_buy_vol": 267.64,
+      "total_lots": 349.67,
+      "net_lots": 185.61,
       "bias": "NET-BUYERS",
       "oanda_short": 27.0,
       "oanda_long": 73.0,
@@ -991,14 +829,8 @@
         "NEW YORK"
       ],
       "session": "NEW YORK",
-      "rsi_4h": [
-        55.8,
-        49.3
-      ],
-      "rsi_1h": [
-        55.8,
-        49.3
-      ],
+      "rsi_4h": 49.3,
+      "rsi_1h": 55.8,
       "rsi_15m": 45.8,
       "ob_time": "-",
       "os_time": "-",
@@ -1006,11 +838,11 @@
       "range_used": 112,
       "atr_pips": 52.8,
       "net_sale": 15.0,
-      "net_sale_vol": 171.8,
+      "net_sale_vol": 171.79,
       "net_buy": 85.0,
       "net_buy_vol": 1009.56,
-      "total_lots": 1181.36,
-      "net_lots": 837.76,
+      "total_lots": 1181.35,
+      "net_lots": 837.77,
       "bias": "NET-BUYERS",
       "oanda_short": null,
       "oanda_long": null,
@@ -1029,26 +861,20 @@
         "NEW YORK"
       ],
       "session": "COMMODITIES \u2022 LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        60.5,
-        52.0
-      ],
-      "rsi_1h": [
-        60.5,
-        52.0
-      ],
+      "rsi_4h": 52.0,
+      "rsi_1h": 60.5,
       "rsi_15m": 57.8,
       "ob_time": "-",
       "os_time": "-",
       "price_action": "-",
       "range_used": 120,
       "atr_pips": 112.1,
-      "net_sale": 57.0,
-      "net_sale_vol": 1163.34,
-      "net_buy": 43.0,
-      "net_buy_vol": 893.94,
-      "total_lots": 2057.28,
-      "net_lots": -269.4,
+      "net_sale": 56.0,
+      "net_sale_vol": 1157.32,
+      "net_buy": 44.0,
+      "net_buy_vol": 893.68,
+      "total_lots": 2051.0,
+      "net_lots": -263.64,
       "bias": "NONE",
       "oanda_short": null,
       "oanda_long": null,
@@ -1067,14 +893,8 @@
         "NEW YORK"
       ],
       "session": "COMMODITIES \u2022 LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        61.9,
-        50.4
-      ],
-      "rsi_1h": [
-        61.9,
-        50.4
-      ],
+      "rsi_4h": 50.4,
+      "rsi_1h": 61.9,
       "rsi_15m": 59.0,
       "ob_time": "-",
       "os_time": "-",
@@ -1105,14 +925,8 @@
         "NEW YORK"
       ],
       "session": "COMMODITIES \u2022 LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        71.9,
-        61.9
-      ],
-      "rsi_1h": [
-        71.9,
-        61.9
-      ],
+      "rsi_4h": 61.9,
+      "rsi_1h": 71.9,
       "rsi_15m": 63.7,
       "ob_time": "-",
       "os_time": "-",
@@ -1143,14 +957,8 @@
         "NEW YORK"
       ],
       "session": "COMMODITIES \u2022 LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": [
-        70.5,
-        61.7
-      ],
-      "rsi_1h": [
-        70.5,
-        61.7
-      ],
+      "rsi_4h": 61.7,
+      "rsi_1h": 70.5,
       "rsi_15m": 63.5,
       "ob_time": "-",
       "os_time": "-",
