@@ -1,11 +1,11 @@
 {
-  "updated": "2026-11-27 22:15 EAT",
+  "updated": "2026-11-27 22:20 EAT",
   "fingerprint": {
     "source": "direct",
-    "data_hash": "81968cbaae49",
-    "diag": "direct:status=200,len=721454,added=30 | browser:status=ok,len=44772,added=0 | jina:status=200,len=83540,added=0",
+    "data_hash": "e9ceb2a38fbb",
+    "diag": "direct:status=200,len=721451,added=30 | browser:status=ok,len=44772,added=0 | jina:status=200,len=83545,added=0",
     "sentiment_changed": true,
-    "sentiment_since": "2026-11-27 22:15 EAT"
+    "sentiment_since": "2026-11-27 22:20 EAT"
   },
   "pairs": [
     {
@@ -26,11 +26,11 @@
       "range_used": 52,
       "atr_pips": 88.4,
       "net_sale": 53.0,
-      "net_sale_vol": 757.59,
+      "net_sale_vol": 757.55,
       "net_buy": 47.0,
-      "net_buy_vol": 675.72,
-      "total_lots": 1433.31,
-      "net_lots": -81.87,
+      "net_buy_vol": 673.7,
+      "total_lots": 1431.25,
+      "net_lots": -83.85,
       "bias": "NONE",
       "oanda_short": 61.0,
       "oanda_long": 39.0,
@@ -504,7 +504,7 @@
       "ob_time": "-",
       "os_time": "-",
       "price_action": "-",
-      "range_used": 74,
+      "range_used": 76,
       "atr_pips": 70.0,
       "net_sale": 20.0,
       "net_sale_vol": 3425.57,
@@ -571,9 +571,9 @@
       "net_sale": 47.0,
       "net_sale_vol": 456.21,
       "net_buy": 53.0,
-      "net_buy_vol": 513.37,
-      "total_lots": 969.58,
-      "net_lots": 57.16,
+      "net_buy_vol": 513.38,
+      "total_lots": 969.59,
+      "net_lots": 57.17,
       "bias": "NONE",
       "oanda_short": 31.0,
       "oanda_long": 69.0,
@@ -861,7 +861,7 @@
         "NEW YORK"
       ],
       "session": "COMMODITIES \u2022 LONDON \u2022 LONDON-NY \u2022 NEW YORK",
-      "rsi_4h": 56.4,
+      "rsi_4h": 56.3,
       "rsi_1h": 68.4,
       "rsi_15m": 67.3,
       "ob_time": "18:05 EAT (3671.00)",
