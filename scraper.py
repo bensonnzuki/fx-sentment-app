@@ -571,7 +571,7 @@ def main():
         raise RuntimeError("0 pairs matched from all sources")
     r1 = fetch_rsi(ALL_PAIRS, "10d", "1h", 60)
     r15_raw = fetch_rsi(ALL_PAIRS, "5d", "15m", 15, return_price=True)
-    r15 = {p: val for p, val in r15_raw.items()}
+    r15 = {p: val[0] for p, val in r15_raw.items()}
     oanda_data = fetch_oanda_all(ALL_PAIRS)
     news_alerts = fetch_high_impact_news()
     now = datetime.now(TZ)

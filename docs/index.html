@@ -43,6 +43,15 @@
   .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:5px; font-size:9px; color:#94a3b8; text-align:center; margin-top:6px; padding-top:6px; border-top:1px solid #334155; }
   .val { font-weight:800; font-size:12px; color:#f8fafc; margin-top:1px; }
   .hot { color:#f87171; } .cold { color:#4ade80; } .cyan { color:#38bdf8; }
+  .xl-wrap { grid-column: 1 / -1; overflow-x: auto; background:#1e293b; border:1px solid #334155; border-radius:10px; }
+  .xl-bar { display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:#0f172a; border-bottom:1px solid #334155; }
+  .xl-btn { background:#16a34a; color:#fff; border:none; border-radius:6px; padding:6px 10px; font-size:11px; font-weight:700; cursor:pointer; }
+  table.xl { width:100%; border-collapse:collapse; font-size:11px; white-space:nowrap; }
+  table.xl th { background:#1e3a5f; color:#e2e8f0; font-weight:700; padding:7px 8px; border:1px solid #334155; text-align:center; position:sticky; top:0; }
+  table.xl td { padding:6px 8px; border:1px solid #334155; text-align:center; color:#f8fafc; }
+  table.xl tr:nth-child(even) td { background:#172033; }
+  table.xl td.left { text-align:left; font-weight:800; }
+  table.xl td.num { text-align:right; font-variant-numeric:tabular-nums; }
 </style>
 </head>
 <body>
@@ -63,6 +72,7 @@
     <div class="tab oanda" data-f="AGREED" onclick="setFilter('AGREED',this)">INSYNC (0)</div>
     <div class="tab" data-f="SIGNALS" onclick="setFilter('SIGNALS',this)">SIGNALS (0)</div>
     <div class="tab" style="border:1px solid #eab308;color:#fde047;" data-f="NEWS" onclick="setFilter('NEWS',this)">⚠️ NEWS (0)</div>
+    <div class="tab" style="border:1px solid #22c55e;color:#4ade80;" data-f="EXCEL" onclick="setFilter('EXCEL',this)">EXCEL</div>
   </div>
   <div class="tabs">
     <span class="lbl">SORT:</span>
@@ -106,13 +116,84 @@ function updateCounts() {
   const labels = { AGREED: "INSYNC", "NEW YORK": "NEW-YORK", NEWS: "⚠️ NEWS" };
   document.querySelectorAll("#ftabs .tab").forEach(t => {
     const k = t.getAttribute("data-f");
-    t.textContent = (labels[k] || k) + " (" + (c[k] ?? 0) + ")";
+    t.textContent = k === "EXCEL" ? "EXCEL" : (labels[k] || k) + " (" + (c[k] ?? 0) + ")";
   });
 }
+function downloadCSV() {
+  const headers = ["PAIR","OVERBOUGHT_TIME_RSI>=70","OVERSOLD_TIME_RSI<=30","PRICE_ACTION","SESSION","MFB_SALE_%","MFB_BUY_%","OANDA_SHORT_%","OANDA_LONG_%","1H_RSI","15M_RSI","TOTAL_LOTS","NET_LOTS","BIAS","2_OF_2","NEWS"];
+  const lines = [headers.join(",")];
+  allPairs.forEach(p => {
+    const row = [
+      p.pair,
+      `"${p.ob_time || "-"}"`,
+      `"${p.os_time || "-"}"`,
+      `"${p.price_action || "-"}"`,
+      `"${(p.sessions||[]).join(' | ')}"`,
+      p.net_sale ?? "",
+      p.net_buy ?? "",
+      p.oanda_short ?? "",
+      p.oanda_long ?? "",
+      p.rsi_1h ?? "",
+      p.rsi_15m ?? "",
+      p.total_lots ?? "",
+      p.net_lots ?? "",
+      `"${p.bias || ""}"`,
+      p.agreed_2of2 ? "YES" : "NO",
+      `"${p.news_warning || ""}"`
+    ];
+    lines.push(row.join(","));
+  });
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "SessionEdge_Report_" + new Date().toISOString().slice(0,10) + ".csv";
+  a.click();
+}
+
 function render() {
   updateCounts();
   let rows = allPairs.filter(p => filter==="NEWS" ? p.news_warning : (filter==="AGREED" ? p.agreed_2of2 :  (filter==="SIGNALS" ? (p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS") : (filter==="ALL" ? true : (p.sessions||[]).includes(filter)))));
   rows.sort((a,b) => sortBy==="SETUP" ? setupScore(b)-setupScore(a) : (sortBy==="LOTS" ? b.total_lots-a.total_lots : (sortBy==="RSI" ? Math.abs((b.rsi_15m??50)-50)-Math.abs((a.rsi_15m??50)-50) : (sortBy==="NET" ? Math.abs(b.net_lots)-Math.abs(a.net_lots) : a.pair.localeCompare(b.pair)))));
+  if (filter === "EXCEL") {
+    const trs = rows.map(p => {
+      const isSig = p.bias === "NET-BUYERS" || p.bias === "NET-SELLERS";
+      const hasO = p.oanda_short != null && p.oanda_long != null;
+      const bLbl = isSig && hasO ? (p.agreed_2of2 ? `${p.bias} 2/2` : `${p.bias} 1/2`) : p.bias;
+      const bCls = isSig && hasO && !p.agreed_2of2 ? "SPLIT" : (p.bias||"NONE").split(" ");
+      return `<tr>
+        <td class="left">${p.pair}</td>
+        <td class="hot" style="font-weight:700;">${p.ob_time || "-"}</td>
+        <td class="cold" style="font-weight:700;">${p.os_time || "-"}</td>
+        <td style="font-weight:700;color:${(p.price_action||"").includes("reversed")?"#fbbf24":"#38bdf8"};">${p.price_action || "-"}</td>
+        <td><span class="badge ${bCls}">${bLbl}</span></td>
+        <td class="num">${p.total_lots ? p.net_sale + "%" : "-"}</td>
+        <td class="num">${p.total_lots ? p.net_buy + "%" : "-"}</td>
+        <td class="num cyan">${p.oanda_short != null ? p.oanda_short + "%" : "-"}</td>
+        <td class="num cyan">${p.oanda_long != null ? p.oanda_long + "%" : "-"}</td>
+        <td class="num ${rsiCls(p.rsi_1h)}">${p.rsi_1h ?? "-"}</td>
+        <td class="num ${rsiCls(p.rsi_15m)}">${p.rsi_15m ?? "-"}</td>
+        <td class="num">${p.total_lots ? Math.round(p.total_lots).toLocaleString() : "-"}</td>
+        <td class="num ${p.net_lots>0?'cold':(p.net_lots<0?'hot':'')}">${p.total_lots ? (p.net_lots>0?'+':'') + Math.round(p.net_lots).toLocaleString() : "-"}</td>
+        <td style="font-size:9px;color:#94a3b8;">${(p.sessions||[]).join(" • ")}</td>
+        <td style="font-size:9px;color:#fde047;">${p.news_warning || "-"}</td>
+      </tr>`;
+    }).join("");
+    document.getElementById("list").innerHTML = `<div class="xl-wrap">
+      <div class="xl-bar">
+        <span style="font-size:11px;color:#94a3b8;font-weight:700;">Excel Sheet View (${rows.length} instruments)</span>
+        <button class="xl-btn" onclick="downloadCSV()">⬇ Download Excel (.csv)</button>
+      </div>
+      <table class="xl">
+        <thead><tr>
+          <th>PAIR</th><th>OVERBOUGHT-TIME<br><span style="font-size:9px;color:#94a3b8;">RSI &ge; 70</span></th><th>OVERSOLD-TIME<br><span style="font-size:9px;color:#94a3b8;">RSI &le; 30</span></th><th>PRICE ACTION</th><th>STATUS</th><th>MFB S%</th><th>MFB B%</th><th>OANDA S%</th><th>OANDA L%</th>
+          <th>1H RSI</th><th>15M RSI</th><th>TOTAL LOTS</th><th>NET LOTS</th><th>SESSIONS</th><th>NEWS</th>
+        </tr></thead>
+        <tbody>${trs}</tbody>
+      </table>
+    </div>`;
+    return;
+  }
+
   document.getElementById("list").innerHTML = rows.map(p => {
     const isSig = p.bias==="NET-BUYERS"||p.bias==="NET-SELLERS", hasO = p.oanda_short!=null && p.oanda_long!=null;
     const bLbl = isSig && hasO ? (p.agreed_2of2 ? `${p.bias} 2/2` : `${p.bias} 1/2`) : p.bias;
